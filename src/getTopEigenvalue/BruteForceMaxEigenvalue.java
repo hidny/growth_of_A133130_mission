@@ -3,6 +3,9 @@ package getTopEigenvalue;
 import determinantStudy.Permutation;
 import number.IsNumber;
 
+// TODO:
+// How to improve on this:
+// Next level: https://math.stackexchange.com/questions/2269267/determinant-of-large-matrices-it-must-exist-a-faster-way
 public class BruteForceMaxEigenvalue {
 
 	public static void main(String[] args) {
@@ -186,41 +189,3 @@ public class BruteForceMaxEigenvalue {
 		}
 
 }
-
-/*
- * 
-
-n = 1
-##
-##
-
-
-Result:
-1(1-y)^2 + 0(1-y)^1 + 1
-
-
-n = 2
-####
-##_#
-#_##
-####
-
-
-Result:
-1(1-y)^4 + 0(1-y)^3 + 5(1-y)^2 + 4(1-y)^1 + 4
-
-
-n = 3
-########
-##_###_#
-#_##__##
-####__##
-##__####
-##__##_#
-#_###_##
-########
-
-
-Result:
-1(1-y)^8 + 0(1-y)^7 + 21(1-y)^6 + 48(1-y)^5 + 236(1-y)^4 + 604(1-y)^3 + 1304(1-y)^2 + 1792(1-y)^1 + 1208
-*/
