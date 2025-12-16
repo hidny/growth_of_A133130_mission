@@ -1,13 +1,21 @@
 package getTopEigenvalue;
 
-public class BasicGetTopEigenvalue {
+public class BasicGetTopEigenvalueMemoize {
 
 	public static void main(String[] args) {
 		
 		int NUM_IT = 10;
 		int PERIOD_DEBUG_PER_LOOP = 1;
 		
-		for(int n=18; n<21; n++) {
+		
+		
+		for(int n=17; n<18; n++) {
+			
+			System.out.println("Memorizing the answers to convert Bool:");
+			setupCovertToBoolAnswers(n);
+			System.out.println("Done Memorizing the answers to convert Bool:");
+			
+			
 			System.out.println();
 			System.out.println("N = " + n + ":");
 			
@@ -46,11 +54,11 @@ public class BasicGetTopEigenvalue {
 		
 		for(int i=0; i<vector.length; i++) {
 			
-			boolean bitsI[] = convertToBool(i, n);
+			boolean bitsI[] = covertToBoolAnswers[i];
 			
 			for(int j=0; j<vector.length; j++) {
 				
-				boolean bitsJ[] = convertToBool(j, n);
+				boolean bitsJ[] = covertToBoolAnswers[j];
 				
 				boolean foundBad2x2Subspace = false;
 				for(int k=0; k<bitsI.length - 1; k++) {
@@ -82,9 +90,19 @@ public class BasicGetTopEigenvalue {
 		
 		return newVector;
 	}
-	
 
-	public static boolean[] convertToBool(int num, int numBinaryDigits) {
+	public static boolean[][] covertToBoolAnswers;
+	
+	public static void setupCovertToBoolAnswers(int numBinaryDigits) {
+		covertToBoolAnswers = new boolean[(int)Math.pow(2, numBinaryDigits)][];
+		
+		for(int i=0; i<covertToBoolAnswers.length; i++) {
+			covertToBoolAnswers[i] = convertToBoolSlow(i, numBinaryDigits);
+		}
+		
+	}
+
+	public static boolean[] convertToBoolSlow(int num, int numBinaryDigits) {
 		
 		boolean ret[] = new boolean[numBinaryDigits];
 		
@@ -343,4 +361,22 @@ Current eigenvalue: 24118.026115302382
 Final eigenvalue: 24118.026115302382
 Estimated growth rate: 1.8104428058959234
 
+*/
+/*
+ * 
+Memorizing the answers to convert Bool:
+Done Memorizing the answers to convert Bool:
+N = 18:
+Current eigenvalue: 262144.0
+Current eigenvalue: 35880.40375518799
+Current eigenvalue: 44272.8987603416
+Current eigenvalue: 43321.667778946874
+Current eigenvalue: 43430.510708147995
+Current eigenvalue: 43419.19387579724
+Current eigenvalue: 43420.56291435467
+Current eigenvalue: 43420.42105273426
+Current eigenvalue: 43420.43978943387
+Current eigenvalue: 43420.437890940004
+Final eigenvalue: 43420.437890940004
+Estimated growth rate: 1.8098795699639625
 */

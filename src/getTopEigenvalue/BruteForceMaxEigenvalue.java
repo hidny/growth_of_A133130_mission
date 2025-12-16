@@ -14,7 +14,7 @@ public class BruteForceMaxEigenvalue {
 		// Also, it's out of reach.
 		
 		
-		for(int n=1; n<=5; n++) {
+		for(int n=1; n<=3; n++) {
 
 			System.out.println();
 			System.out.println();

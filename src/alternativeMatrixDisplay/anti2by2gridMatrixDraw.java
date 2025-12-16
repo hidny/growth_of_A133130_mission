@@ -1,16 +1,18 @@
-package misselaneous.growthRateMultLoops;
+package alternativeMatrixDisplay;
 
 public class anti2by2gridMatrixDraw {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		drawIt(3);
+		drawIt(7);
 	}
 	
 	
 	//TODO: what if we order it by the # of times the numbers switch from 0 to 1? Will the picture look clearer?
 	//Right now, it has a fractal shape.
 	public static void drawIt(int numBits) {
+		
+		int numDebug = 0;
 		
 		for(int i=0; i<Math.pow(2, numBits); i++) {
 			
@@ -21,7 +23,7 @@ public class anti2by2gridMatrixDraw {
 				
 				boolean foundProb = false;
 				for(int k=0; k<bitsI.length - 1; k++) {
-					if(bitsI[k] != bitsI[k+1] && bitsI[k] == bitsJ[k+1] && bitsI[k+1] == bitsJ[k]) {
+					if(bitsI[k]== bitsI[k+1] && bitsI[k] == bitsJ[k+1] && bitsI[k+1] == bitsJ[k]) {
 						foundProb = true;
 						break;
 					}
@@ -30,12 +32,14 @@ public class anti2by2gridMatrixDraw {
 					System.out.print("_");
 				} else {
 					System.out.print("#");
+					numDebug++;
 				}
 			}
 			System.out.println();
 		}
 		System.out.println();
 		System.out.println();
+		System.out.println(numDebug);
 		
 	}
 	
