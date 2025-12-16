@@ -2,14 +2,17 @@ package getTopEigenvalue;
 
 public class BasicGetTopEigenvalueMemoize {
 
+	
 	public static void main(String[] args) {
+		
+		initializePow2();
 		
 		int NUM_IT = 10;
 		int PERIOD_DEBUG_PER_LOOP = 1;
 		
 		
 		
-		for(int n=17; n<18; n++) {
+		for(int n=1; n<19; n++) {
 			
 			System.out.println("Memorizing the answers to convert Bool:");
 			setupCovertToBoolAnswers(n);
@@ -46,6 +49,19 @@ public class BasicGetTopEigenvalueMemoize {
 		}
 	}
 
+
+	public static void initializePow2() {
+		pow2 = new int[30];
+		
+		pow2[0] = 1;
+		
+		for(int i=1; i<pow2.length; i++ ) {
+			pow2[i] = 2 * pow2[i-1];
+		}
+	}
+	public static int pow2[] = null;
+	
+	
 	
 	
 	public static double[] multCurrentVection(double vector[], int n) {
@@ -56,14 +72,16 @@ public class BasicGetTopEigenvalueMemoize {
 			
 			boolean bitsI[] = covertToBoolAnswers[i];
 			
-			for(int j=0; j<vector.length; j++) {
+			for(int j=0; j<vector.length; ) {
 				
 				boolean bitsJ[] = covertToBoolAnswers[j];
 				
+				int badIndex = 0;
 				boolean foundBad2x2Subspace = false;
 				for(int k=0; k<bitsI.length - 1; k++) {
 					if(bitsI[k] != bitsI[k+1] && bitsI[k] == bitsJ[k+1] && bitsI[k+1] == bitsJ[k]) {
 						foundBad2x2Subspace = true;
+						badIndex = bitsI.length - 2 - k;
 						break;
 					}
 				}
@@ -71,6 +89,9 @@ public class BasicGetTopEigenvalueMemoize {
 				if( ! foundBad2x2Subspace) {
 					newVector[i] += vector[j];
 				}
+
+				j += pow2[badIndex];
+				
 				
 			}
 		}
