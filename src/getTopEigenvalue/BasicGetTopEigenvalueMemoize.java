@@ -12,7 +12,7 @@ public class BasicGetTopEigenvalueMemoize {
 		
 		
 		
-		for(int n=1; n<19; n++) {
+		for(int n=19; n<30; n++) {
 			
 			System.out.println("Memorizing the answers to convert Bool:");
 			setupCovertToBoolAnswers(n);
@@ -400,4 +400,39 @@ Current eigenvalue: 43420.43978943387
 Current eigenvalue: 43420.437890940004
 Final eigenvalue: 43420.437890940004
 Estimated growth rate: 1.8098795699639625
+
+
+N = 19:
+Current eigenvalue: 524288.0
+Current eigenvalue: 63894.976459503174
+Current eigenvalue: 79791.13161000198
+Current eigenvalue: 77983.8610997002
+Current eigenvalue: 78190.20960008849
+Current eigenvalue: 78168.82697009502
+Current eigenvalue: 78171.40886002016
+Current eigenvalue: 78171.14286438318
+Current eigenvalue: 78171.1779626528
+Current eigenvalue: 78171.17444136906
+Final eigenvalue: 78171.17444136906
+Estimated growth rate: 1.8093757705550635
+Memorizing the answers to convert Bool:
+Done Memorizing the answers to convert Bool:
+
+
+
+N = 20:
+Current eigenvalue: 1048576.0
+Current eigenvalue: 113782.66656684875
+Current eigenvalue: 143804.10729526234
+Current eigenvalue: 140379.69690013526
+Current eigenvalue: 140769.9052491005
+Current eigenvalue: 140729.5936299661
+Current eigenvalue: 140734.4528262486
+Current eigenvalue: 140733.95486658227
+Current eigenvalue: 140734.02051437803
+Current eigenvalue: 140734.01398879895
+Final eigenvalue: 140734.01398879895
+Estimated growth rate: 1.8089224709916407
+Memorizing the answers to convert Bool:
+Done Memorizing the answers to convert Bool:
 */

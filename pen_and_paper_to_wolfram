@@ -1,0 +1,30 @@
+sum b=0 to 0 ((-1)^b*x^(2^n-2b)((2^n)^(2)*(0.5+2/sqrt(17))*(1/(sqrt(17) - 3))^(n-1))^b/(2^b*b!)) where x = 1.2^n, n=10
+
+
+Right idea:
+
+sum b=0 to 10 ((-1)^b*x^(2^n-2b)((2^n)^(2)*(0.5+2/sqrt(17))*(1/(sqrt(17) - 3))^(n-1))^b/(2^b*b!)) where x = 1.78^n, n=10
+
+
+k=(0.5+2/sqrt(17)
+M=(2^n)
+p=(1/(sqrt(17) - 3))
+
+
+
+First term isn't biggest:
+ln((x^(2^n-2b)((2^n)^(2)*(0.5+2/sqrt(17))*(1/(sqrt(17) - 3))^(n-1))^b/(2^b*b!))) where x = 1.6^n, n=10
+
+More like 16th term.
+
+n=15:
+ln((x^(2^n-2b)((2^n)^(2)*(0.5+2/sqrt(17))*(1/(sqrt(17) - 3))^(n-1))^b/(2^b*b!))) where x = 1.6^n, n=15
+max around 80
+
+key:
+
+Simplifying, 
+all terms with 1 and 2 cycles add up to:
+
+x^(2^M)*exp(-y)
+where y = (((-M^2)(k)p^n)/(2*x^2)))

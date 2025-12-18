@@ -41,7 +41,7 @@ import java.math.BigInteger;
 
 public class GetNumWaysToGridWithMultLoops {
 
-	public static int N = 23;
+	public static int N = -1;
 
 	//N=23:
 	//235093808618308001100994611101527413576445205415492247696869234849229717448591264986087113188145626281800778840545892121822758
@@ -79,9 +79,14 @@ public class GetNumWaysToGridWithMultLoops {
 
 				double numAdjust = 0.75;
 				double zeroPoint75= numDigits/((n-numAdjust)*(n-numAdjust));
-				System.out.println();
 				System.out.println("Digits div (n-" + numAdjust + ")^2: " + zeroPoint75);
 				System.out.println("Estimate lambda " + numAdjust + ": " + Math.pow(2, zeroPoint75));
+				
+
+				double numAdjust600 = 0.6;
+				double zeroPoint600= numDigits/((n-numAdjust600)*(n-numAdjust600));
+				System.out.println("Digits div (n-" + numAdjust600 + ")^2: " + zeroPoint600);
+				System.out.println("Estimate lambda " + numAdjust600 + ": " + Math.pow(2, zeroPoint600));
 			}
 			
 			double firstOne = numDigits/(n*n);
