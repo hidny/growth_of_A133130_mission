@@ -436,3 +436,7 @@ Estimated growth rate: 1.8089224709916407
 Memorizing the answers to convert Bool:
 Done Memorizing the answers to convert Bool:
 */
+
+
+//140734.02^(1/x) = 1.8003 => x = n.1625 (fraction part is 13/80)
+// Is 1.8003 key?

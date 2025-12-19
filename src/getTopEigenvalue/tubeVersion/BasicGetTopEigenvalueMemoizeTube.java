@@ -1,7 +1,7 @@
 package getTopEigenvalue.tubeVersion;
 
 //Oh wow! This seems to converge much much faster!
-//I'm now confident g = 1.8003313 +x 0.0000005
+//I'm now confident g = 1.8003313 +/- 0.0000005
 
 //I already have a home-grown theorem called the expansion tolerance theorem that could prove that gTube = gNormal
 
@@ -423,18 +423,39 @@ Estimated growth rate: 1.800331348003789
 
 N = 17:
 Current eigenvalue: 131072.0
-Current eigenvalue: 18212.085556030273
-Current eigenvalue: 22329.723705429344
 Current eigenvalue: 21882.284994002774
-Current eigenvalue: 21931.913989469373
-Current eigenvalue: 21927.105013854907
 Current eigenvalue: 21927.663751118664
-Current eigenvalue: 21927.613213971155
-Current eigenvalue: 21927.619728074205
 Current eigenvalue: 21927.61923514889
-Final eigenvalue: 21927.61923514889
-Estimated growth rate: 1.8003313332154718
+Current eigenvalue: 21927.619314371823
+Current eigenvalue: 21927.619314401465
+Current eigenvalue: 21927.619314401396
+Current eigenvalue: 21927.61931440141
+Current eigenvalue: 21927.619314401403
+Current eigenvalue: 21927.61931440141
+Final eigenvalue: 21927.619314401407
+Estimated growth rate: 1.8003313335982305
 Memorizing the answers to convert Bool:
 Done Memorizing the answers to convert Bool:
+
+Memorizing the answers to convert Bool:
+Done Memorizing the answers to convert Bool:
+
+
+N = 18:
+Current eigenvalue: 262144.0
+Current eigenvalue: 39390.565182437356
+Current eigenvalue: 39477.06263332835
+Current eigenvalue: 39476.97777594986
+Current eigenvalue: 39476.977926972824
+Current eigenvalue: 39476.97792702902
+Current eigenvalue: 39476.97792703004
+Current eigenvalue: 39476.97792703004
+Current eigenvalue: 39476.97792703004
+Current eigenvalue: 39476.97792703004
+Final eigenvalue: 39476.97792703005
+Estimated growth rate: 1.8003313280347228
+Memorizing the answers to convert Bool:
+Done Memorizing the answers to convert Bool:
+
 
 */
