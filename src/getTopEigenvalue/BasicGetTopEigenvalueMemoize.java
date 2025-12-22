@@ -435,6 +435,22 @@ Final eigenvalue: 140734.01398879895
 Estimated growth rate: 1.8089224709916407
 Memorizing the answers to convert Bool:
 Done Memorizing the answers to convert Bool:
+
+N = 21:
+Current eigenvalue: 2097152.0
+Current eigenvalue: 202621.48808002472
+Current eigenvalue: 259171.9262243948
+Current eigenvalue: 252699.19985853665
+Current eigenvalue: 253435.38948414533
+Current eigenvalue: 253359.5461375224
+Current eigenvalue: 253368.67406057572
+Current eigenvalue: 253367.7432188477
+Current eigenvalue: 253367.86583418646
+Current eigenvalue: 253367.8537509206
+Final eigenvalue: 253367.8537509206
+Estimated growth rate: 1.8085124406718445
+Memorizing the answers to convert Bool:
+Done Memorizing the answers to convert Bool:
 */
 
 

@@ -21,7 +21,7 @@ public class BasicGetTopEigenvalueMemoizeTube {
 		
 		
 		
-		for(int n=17; n<21; n++) {
+		for(int n=21; n<=21; n++) {
 			
 			System.out.println("Memorizing the answers to convert Bool:");
 			setupCovertToBoolAnswers(n);
@@ -475,6 +475,21 @@ Memorizing the answers to convert Bool:
 Done Memorizing the answers to convert Bool:
 
 
+N = 20:
+Current eigenvalue: 1048576.0
+Current eigenvalue: 127641.33298602815
+Current eigenvalue: 127952.8009884469
+Current eigenvalue: 127952.49539100162
+Current eigenvalue: 127952.49593492241
+Current eigenvalue: 127952.49593509594
+Current eigenvalue: 127952.4959351034
+Current eigenvalue: 127952.49593510336
+Current eigenvalue: 127952.49593510333
+Current eigenvalue: 127952.49593510333
+Final eigenvalue: 127952.49593510333
+Estimated growth rate: 1.8003313250318118
 
 
+estimate:
+1.80033132503
 */
