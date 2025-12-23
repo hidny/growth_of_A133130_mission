@@ -106,6 +106,7 @@ public class FormulaTrial1 {
 	// TODO: Does the assumption that cycles >=3 are random with no bias even hold?
 	// For example P(s1 connects s3) == P( s1 connects s3 given s1 connects to s2 and s2 connects to s3) ???
 	// I assumed it did, but that's starting to seem foolish.
+	//TODO: Test the assumption by doing random sampling for both situations and comparing.
 	
 	
 	
