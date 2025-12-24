@@ -490,6 +490,13 @@ Final eigenvalue: 127952.49593510333
 Estimated growth rate: 1.8003313250318118
 
 
+N = 21:
+Current eigenvalue: 2097152.0
+Current eigenvalue: 229768.71515436203
+Current eigenvalue: 230357.4623172757
+
 estimate:
 1.80033132503
+tends to
+1.8003313248
 */

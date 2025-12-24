@@ -6,23 +6,72 @@ public class FormulaTrial1 {
 	public static double K = (0.5 + 2.0/Math.sqrt(17));
 	public static double P = 1.0/(Math.sqrt(17) -3.0);
 	
-	//TODO: solve via dynamic programming.
+	// Solved via dynamic programming.
 	// My feeling is that the formula is wrong somehow and I'll be nonsense answers.
 
 	
 	public static void main(String[] args) {
 		//setupPerm();
 		
+		int N = 60;
+		int NUM_COEF = 2 * 150;
 		
 		//[1]
 		//[1, 2]
 		//[1, 2, 3]
 		//[1, 2, 3, 4]
 		
-		getEquation(30, 20);
+		double poly[] = getEquation(NUM_COEF, N);
 		
+		double y = solvePolynomial(poly);
+		System.out.println("Y value:" + y);
+		//x = M*(p^n*k) * y
+		// = (2p)^n*k*y
+		
+		double x = Math.pow(2.0 * P, N)*K* y;
+		
+		System.out.println("X Value: " + x);
+		
+		double g = Math.pow(x, (1.0/N));
+		System.out.println("Estimated g value: " + g);
 		
 	}
+	
+	public static double solvePolynomial(double poly[]) {
+		return solvePolynomial(poly, 0.00001, 10.0);
+	}
+
+	public static double solvePolynomial(double poly[], double min, double max) {
+		
+		if(max - min < 0.000001) {
+			return min;
+		}
+		
+		double mid = (max + min) / 2;
+		
+		double resMid = solvePolynomial(poly, mid);
+		if(resMid == 0) {
+			return mid;
+		} else if(resMid < 0) {
+			return solvePolynomial(poly, mid, max);
+		} else {
+			return solvePolynomial(poly, min, mid);
+			
+		}
+	}
+	
+	public static double solvePolynomial(double poly[], double yValue) {
+		
+		double ret = 0.0;
+		
+		for(int i=0; i<poly.length; i++) {
+			
+			ret += poly[poly.length - 1 -i] * Math.pow(yValue, i);
+		}
+		
+		return ret;
+	}
+	
 
 	public static double[] getEquation(int numCoef, int n) {
 
@@ -42,7 +91,6 @@ public class FormulaTrial1 {
 				}
 
 				if(c >= 2) {
-					//TODO: You could make this faster:
 					for(int b=1; c*b<=i; b++) {
 						
 						if(c == 2) {
@@ -101,13 +149,15 @@ public class FormulaTrial1 {
 	// g = 1.640819
 	// Dph!
 	
-	//TODO: solve polynomial with binary search
-	//TODO: automate the g calc test
+	//DONE: solve polynomial with binary search
+	//DONE: automate the g calc test
+	
 	// TODO: Does the assumption that cycles >=3 are random with no bias even hold?
 	// For example P(s1 connects s3) == P( s1 connects s3 given s1 connects to s2 and s2 connects to s3) ???
 	// I assumed it did, but that's starting to seem foolish.
 	//TODO: Test the assumption by doing random sampling for both situations and comparing.
 	
+	//TODO: Experiment with deleting because it's not M^2, but M*(M-1). You already did the math for that
 	
 	
 	public static void display() {
@@ -210,9 +260,13 @@ public class FormulaTrial1 {
 		double posNeg = Math.pow(-1, b);
 		
 		// c = 2.0 is the special case because the Matrix is symmetric
-		double absTerm = Math.pow(1.0/(c*Math.pow(p, n)*k), b) / permB[b];
+		if( b >= permB.length) {
+			return 0.0;
+		} else {
+			double absTerm = Math.pow(1.0/(c*Math.pow(p, n)*k), b) / permB[b];
 		
-		return posNeg * absTerm;
+			return posNeg * absTerm;
+		}
 		
 	}
 	
