@@ -1,6 +1,9 @@
 package penAndPaperHelp.formulaTrial;
 
-public class FormulaTrial1 {
+//TODO: calc based on just 2 cycles.
+//TODO reset y to work well with 2 cycles.
+//TODOL pen and paper math is needed.
+public class FormulaTrial2 {
 
 	
 	public static double K = (0.5 + 2.0/Math.sqrt(17));
@@ -75,7 +78,7 @@ public class FormulaTrial1 {
 
 	public static double[] getEquation(int numCoef, int n) {
 
-		double firstNCoef[][] = new double[numCoef][numCoef];
+		double firstNCoef[][] = new double[numCoef][3];
 		
 		for(int j=0; j<firstNCoef[0].length; j++) {
 			firstNCoef[0][j] = 1.0;
@@ -95,9 +98,6 @@ public class FormulaTrial1 {
 						
 						if(c == 2) {
 							firstNCoef[i][c] += firstNCoef[i-c*b][c-1] * getEstimateCoefficientsForB_2CyclesForY(n, K, P, b);
-						} else {
-							firstNCoef[i][c] += firstNCoef[i-c*b][c-1] * getEstimateCoefficientsForD_CCyclesForY(n, c, b);
-							
 						}
 					}
 				}
@@ -160,87 +160,6 @@ public class FormulaTrial1 {
 	//TODO: Experiment with deleting because it's not M^2, but M*(M-1). You already did the math for that
 	
 	
-	public static void display() {
-		
-		double sum = 0.0;
-		for(int b=0; b<100; b++) {
-			double coef = getEstimateCoefficientsForB_2CyclesForY(10, K, P, b);
-			
-			sum += coef;
-			System.out.println("Coef when there's " + b + " 2-cycles: " + coef);
-		}
-		System.out.println("Sum: " + sum);
-
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		sum = 0.0;
-		int CYCLE = 3;
-		for(int b=0; b<100; b++) {
-			double coef = getEstimateCoefficientsForD_CCyclesForY(10, CYCLE, b);
-
-			sum += coef;
-			System.out.println("Coef when there's " + b + " " + CYCLE + "-cycles: " + coef);
-		}
-		System.out.println("Sum: " + sum);
-
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		sum = 0.0;
-		CYCLE = 10;
-		for(int b=0; b<100; b++) {
-			double coef = getEstimateCoefficientsForD_CCyclesForY(10, CYCLE, b);
-
-			sum += coef;
-			System.out.println("Coef when there's " + b + " " + CYCLE + "-cycles: " + coef);
-		}
-		System.out.println("Sum: " + sum);
-		
-
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		sum = 0.0;
-		CYCLE = 20;
-		for(int b=0; b<100; b++) {
-			double coef = getEstimateCoefficientsForD_CCyclesForY(10, CYCLE, b);
-
-			sum += coef;
-			System.out.println("Coef when there's " + b + " " + CYCLE + "-cycles: " + coef);
-		}
-		System.out.println("Sum: " + sum);
-		
-		
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		sum = 0.0;
-		CYCLE = 100;
-		for(int b=0; b<100; b++) {
-			double coef = getEstimateCoefficientsForD_CCyclesForY(50, CYCLE, b);
-
-			sum += coef;
-			System.out.println("Coef when there's " + b + " " + CYCLE + "-cycles: " + coef);
-		}
-		System.out.println("Sum: " + sum);
-		
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		
-		System.out.println("How goes: k^(n-1)");
-		
-		double cur = 1.0;
-		for(int n=1; n<1000; n++) {
-			System.out.println("n = " + n + ": " + cur);
-			cur *=K;
-		}
-		System.out.println("VS: " + Math.pow(K, 998));
-		System.out.println("The fact that it tends to 0 means that the terms with lower coefficients might matter when they seem not to...");
-	}
-	
-	
 	
 	public static double[] getEstimateCoefficients(int n, double k, double p) {
 		
@@ -270,22 +189,6 @@ public class FormulaTrial1 {
 		
 	}
 	
-	//pre: c >= 3
-	// sum (b=1 to inf) (-1)^(b*(c-1))(M^c*(p^n*k)^c/(c*x^c))^b*(1/b!)
-	//Idea: y = x/M*(p^n*k)
-	// normally x approx (2pk)^n = M*(p^n*k^n)
-	// Therefore y approx = M*(p^n*k^n)/M*(p^n*k) = k^(n-1) which tends towards 0 as n->inf...
-	
-	//= sum (b=1 to inf) (-1)^(b*(c-1)) (1/(c*y^c))^b*(1/b!)
-	public static double getEstimateCoefficientsForD_CCyclesForY(int n, int c, int b) {
-
-
-		double posNeg = Math.pow(-1, b*(c-1));
-		
-		double absTerm = Math.pow(1.0/c, b) / permB[b];
-		
-		return posNeg * absTerm;
-	}
 	
 	
 	public static double permB[] = setupPerm();

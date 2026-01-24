@@ -2,17 +2,21 @@ package penAndPaperHelp;
 
 public class ProductMMinusI_i_0_to_n {
 
+	// Index term 1:
+	// n choose 2 (MT: n ^2)
+	
 	//Index term 2:
 	//A000914 "Stirling numbers of the first kind: s(n+2, n)."
-	//a(n) = binomial(n+2, 3)*(3*n+5)/4 = (n+1)*n*(n+2)*(3*n+5)/24
+	//a(n) = binomial(n+2, 3)*(3*n+5)/4 = (n+1)*n*(n+2)*(3*n+5)/24  (MT: n ^4)
 	
 	//Index term 3:
 	//https://oeis.org/A001303 Stirling numbers of first kind, s(n+3, n), negated.
+	// a(n) = binomial(n+3, 4)*binomial(n+3, 2)  (MT: n ^6)
 	
 	//Index term 4:
 	//https://oeis.org/A000915
 	//Stirling numbers of first kind s(n+4, n).
-	//a(n) = binomial(n+4, 5)*(15*n^3 + 150*n^2 + 485*n + 502)/48
+	//a(n) = binomial(n+4, 5)*(15*n^3 + 150*n^2 + 485*n + 502)/48 (MT: n ^ 11)
 	
 	//INDEX_TERM = 5;
 	//https://oeis.org/A053567
