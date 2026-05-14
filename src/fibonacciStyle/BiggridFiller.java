@@ -3,16 +3,14 @@ package fibonacciStyle;
 public class BiggridFiller {
 
 	public static void main(String[] args) {
-		
-		
-		// TODO Auto-generated method stub
 		setupFibonnaci();
-		sanityTests();
 		
-		//double constantGuess = testForConstant(100, 100);
+		//sanityTests();
+		
+		double constantGuess = testForConstant(1000, 1000);
 	
 		//Guess at the constant: 1.7951362393174088 (too low)
-		//System.out.println("Guess at the constant: " + constantGuess);
+		System.out.println("Guess at the constant: " + constantGuess);
 	}
 	
 	public static double testForConstant(int size, int iteration) {
@@ -43,6 +41,7 @@ public class BiggridFiller {
 				//End sanity
 				
 				double probMatch = getProbMatchAtIndex(runLeft);
+				//System.out.println("Prob Match: " + probMatch);
 				
 				if(Math.random() < probMatch) {
 					curList[j] = prevList[j];
@@ -71,12 +70,12 @@ public class BiggridFiller {
 				
 				
 			}
-			printList(prevList);
+			//printList(prevList);
 			sanityCheckNo2x2(prevList, curList);
 			prevList = curList;
 		}
 
-		printList(prevList);
+		//printList(prevList);
 		
 		return getLogMultiplicity(prevList);
 		
@@ -116,8 +115,8 @@ public class BiggridFiller {
 		
 		System.out.println("Should be about 2: " + getLogMultiplicity(listTest));
 
-		boolean listTest2[] = new boolean[1000000000];
-		
+		//boolean listTest2[] = new boolean[1000000000];
+		boolean listTest2[] = new boolean[10000000];
 		int numOne = 0;
 		int numTotal = 0;
 		for(int i=0; i<listTest2.length; i++) {
@@ -142,7 +141,34 @@ public class BiggridFiller {
 			listTest3[i] = (i % 4 >= 2);
 		}
 		
-		System.out.println("Should be less than 2: " + getLogMultiplicity(listTest3));
+		System.out.println("Should be less than 2 (somehow got sqrt(3)): " + getLogMultiplicity(listTest3));
+		
+
+		boolean listTest4[] = new boolean[10000];
+		
+		for(int i=0; i<listTest4.length; i++) {
+			listTest4[i] = (i % 6 >= 3);
+		}
+		
+		System.out.println("Should be less than 2 (should be cube root 5): " + getLogMultiplicity(listTest4));
+		
+
+		boolean listTest5[] = new boolean[10000];
+		
+		for(int i=0; i<listTest5.length; i++) {
+			listTest5[i] = (i % 8 >= 4);
+		}
+		
+		System.out.println("Should be less than 2 (should be 8^(1/4)): " + getLogMultiplicity(listTest5));
+		
+
+		boolean listTest6[] = new boolean[10000];
+		
+		for(int i=0; i<listTest6.length; i++) {
+			listTest6[i] = (i % 10 >= 5);
+		}
+		
+		System.out.println("Should be less than 2 (should be 13^(1/5)): " + getLogMultiplicity(listTest6));
 	}
 	
 	public static final int NUM_FIB = 100;
