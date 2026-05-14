@@ -3,16 +3,146 @@ package fibonacciStyle;
 public class BiggridFiller {
 
 	public static void main(String[] args) {
+		
+		
 		// TODO Auto-generated method stub
 		setupFibonnaci();
+		sanityTests();
 		
-		boolean listTest[] = new boolean[10000];
+		//double constantGuess = testForConstant(100, 100);
+	
+		//Guess at the constant: 1.7951362393174088 (too low)
+		//System.out.println("Guess at the constant: " + constantGuess);
+	}
+	
+	public static double testForConstant(int size, int iteration) {
+		
+
+		boolean prevList[] = new boolean[size];
+		for(int i=0; i<prevList.length; i++) {
+			prevList[i] = ((int)(Math.floor(2*Math.random())) == 1);
+		}
+		
+		for(int it=0; it<iteration; it++) {
+
+			boolean curList[] = new boolean[size];
+			
+			int runLeft= 0;
+			
+			for(int j=0; j<curList.length; j++) {
+				
+				if(runLeft == 0) {
+					runLeft = getRun(prevList, j);
+				}
+
+				//Sanity:
+				if(getRun(prevList, j) != runLeft) {
+					System.out.println("DOH 1!");
+					System.exit(1);
+				}
+				//End sanity
+				
+				double probMatch = getProbMatchAtIndex(runLeft);
+				
+				if(Math.random() < probMatch) {
+					curList[j] = prevList[j];
+					
+					runLeft--;
+					if(runLeft > 0) {
+
+						j++;
+						
+						//Sanity:
+						if(getRun(prevList, j) != runLeft) {
+							System.out.println("DOH 2!");
+							System.exit(1);
+						}
+						//End sanity
+						
+						curList[j] = ! prevList[j];
+						
+						runLeft--;
+					}
+					
+				} else {
+					curList[j] = ! prevList[j];
+					runLeft--;
+				}
+				
+				
+			}
+			printList(prevList);
+			sanityCheckNo2x2(prevList, curList);
+			prevList = curList;
+		}
+
+		printList(prevList);
+		
+		return getLogMultiplicity(prevList);
+		
+	}
+	
+	public static void sanityCheckNo2x2(boolean prevList[], boolean curList[]) {
+		
+		for(int i=0; i<prevList.length -1; i++) {
+			
+			if(prevList[i] == prevList[i+1] && curList[i] == curList[i+1] && curList[i] == prevList[i]) {
+				System.out.println("DOH 3!");
+				System.exit(1);
+			}
+		}
+		
+	}
+	
+	public static void printList(boolean list[]) {
+		
+		String ret = "";
+		for(int i=0; i<list.length; i++) {
+			if(list[i]) {
+				ret += "1";
+			} else {
+				ret += "0";
+			}
+		}
+		System.out.println(ret);
+	}
+	
+	public static void sanityTests() {
+		boolean listTest[] = new boolean[1000];
 		
 		for(int i=0; i<listTest.length; i++) {
 			listTest[i] = (i % 2 == 0);
 		}
 		
 		System.out.println("Should be about 2: " + getLogMultiplicity(listTest));
+
+		boolean listTest2[] = new boolean[1000000000];
+		
+		int numOne = 0;
+		int numTotal = 0;
+		for(int i=0; i<listTest2.length; i++) {
+			listTest2[i] = ((int)(Math.floor(2*Math.random())) == 1);
+			numTotal++;
+			if(listTest2[i]) {
+				numOne++;
+			}
+		}
+		
+		//TODO: At least figure out what this is supposed to be
+		//1.7706656394277887
+		//1.770669958614007
+		System.out.println("Should be less than 2. but I don't know: " + getLogMultiplicity(listTest2));
+		System.out.println("Num ones: " + numOne + " num total: " + numTotal);
+		
+		
+
+		boolean listTest3[] = new boolean[1000];
+		
+		for(int i=0; i<listTest3.length; i++) {
+			listTest3[i] = (i % 4 >= 2);
+		}
+		
+		System.out.println("Should be less than 2: " + getLogMultiplicity(listTest3));
 	}
 	
 	public static final int NUM_FIB = 100;
@@ -30,9 +160,9 @@ public class BiggridFiller {
 	
 	public static double phi = 1.6180339887498948482;
 	
-	public static double getOddsMatchAtStartRun(int lengthOfRun) {
-		if(lengthOfRun + 1 < NUM_FIB) {
-			return fib[lengthOfRun - 1] / fib[lengthOfRun + 1];
+	public static double getProbMatchAtIndex(int lengthOfRunLeft) {
+		if(lengthOfRunLeft + 1 < NUM_FIB) {
+			return fib[lengthOfRunLeft - 1] / fib[lengthOfRunLeft + 1];
 		} else {
 			return 1.0 / (phi*phi);
 		}
