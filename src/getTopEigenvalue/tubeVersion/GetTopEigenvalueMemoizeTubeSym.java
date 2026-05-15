@@ -5,16 +5,16 @@ import java.util.Hashtable;
 public class GetTopEigenvalueMemoizeTubeSym {
 
 	
+	public static int TWO_POW_N_MINUS_1 = -1;
 	
 	public static int rotateRight(int n, int numBits) {
 		
 		if( n % 2 == 1 ) { 
-			return ((int)Math.pow(2, numBits-1)) + (n >> 1);
+			return TWO_POW_N_MINUS_1 + (n >> 1);
 		} else {
 			return n>>1;
 		}
 	}
-	
 	public static int getMinNumberConsideringNumBits(int n, int numBits) {
 		
 		//int mask = (int)Math.pow(2, numBits) - 1;
@@ -41,7 +41,9 @@ public class GetTopEigenvalueMemoizeTubeSym {
 		//int PERIOD_DEBUG_PER_LOOP = Math.max(1, NUM_IT/10);
 		int PERIOD_DEBUG_PER_LOOP = 1;
 		
-		for(int numBits=15; numBits<=15; numBits++) {
+		for(int numBits=22; numBits<=22; numBits++) {
+			
+			TWO_POW_N_MINUS_1 = (int)Math.pow(2, numBits - 1);
 			
 			System.out.println("Memorizing the answers to convert Bool:");
 			setupCovertToBoolAnswers(numBits);
@@ -225,3 +227,54 @@ public class GetTopEigenvalueMemoizeTubeSym {
 	}
 
 }
+
+
+
+/*
+// Garbage untested custom hash:
+public static boolean customHash[] = null;
+
+public static int getMaxNumBitsOrbit(int numOrbits) {
+	int curLength = 0;
+	
+	int cur = 1;
+	int MULT = 2;
+	
+	while(numOrbits >= cur) {
+		curLength++;
+		cur *= MULT;
+	}
+	
+	return curLength;
+}
+
+public static void setupCustomHash(int maxBitsNumOrbits, int numBits) {
+	
+	customHash = new boolean[maxBitsNumOrbits * ((int)Math.pow(2, numBits))];
+	
+	for(int i=0; i<(int)Math.pow(2, numBits); i++) {
+		
+		int min = getMinNumberConsideringNumBits(i, numBits);
+		
+		boolean table[] = convertToBoolSlow(min, maxBitsNumOrbits);
+		
+		for(int j=0; j<maxBitsNumOrbits; j++) {
+			customHash[maxBitsNumOrbits * i + j] = table[j];
+		}
+	}
+}
+
+public static int getHash(int num, int maxBitsNumOrbits) {
+	int ret = 0;
+	
+	for(int i=maxBitsNumOrbits*num; i<maxBitsNumOrbits*(num+1); i++) {
+		
+		if(customHash[i]) {
+			ret = 2*ret + 1;
+		} else {
+			ret *= 2;
+		}
+	}
+	return ret;
+}*/
+
