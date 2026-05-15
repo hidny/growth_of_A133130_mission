@@ -6,6 +6,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 
 	
 	public static int TWO_POW_N_MINUS_1 = -1;
+	public static int MASK_FOR_COMPLIMENT = -1;
 	
 	public static int rotateRight(int n, int numBits) {
 		
@@ -15,12 +16,22 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			return n>>1;
 		}
 	}
+	
+	
 	public static int getMinNumberConsideringNumBits(int n, int numBits) {
 		
 		//int mask = (int)Math.pow(2, numBits) - 1;
 
 		int cur = n;
 		int smallest = n;
+		for(int i=0; i<numBits; i++) {
+			cur = rotateRight(cur, numBits);
+			if(cur < smallest) {
+				smallest = cur;
+			}
+		}
+		
+		cur = n ^ MASK_FOR_COMPLIMENT;
 		for(int i=0; i<numBits; i++) {
 			cur = rotateRight(cur, numBits);
 			if(cur < smallest) {
@@ -41,9 +52,10 @@ public class GetTopEigenvalueMemoizeTubeSym {
 		//int PERIOD_DEBUG_PER_LOOP = Math.max(1, NUM_IT/10);
 		int PERIOD_DEBUG_PER_LOOP = 1;
 		
-		for(int numBits=22; numBits<=22; numBits++) {
+		for(int numBits=15; numBits<=15; numBits++) {
 			
 			TWO_POW_N_MINUS_1 = (int)Math.pow(2, numBits - 1);
+			MASK_FOR_COMPLIMENT = (int)Math.pow(2, numBits) - 1;
 			
 			System.out.println("Memorizing the answers to convert Bool:");
 			setupCovertToBoolAnswers(numBits);
@@ -122,6 +134,26 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			
 			System.out.println("Estimated growth rate: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
 			
+			System.out.println("Debug frequency:");
+			if(numBits < 10) {
+				for(int i=0; i<countOrbits; i++) {
+					System.out.println(mappingIndexToNum.get(i) + " -> " + vector[i]);
+				
+					//TODO: AHA
+					// Num bits =4:
+					// Maybe it's just a coincidence :(
+					// root of 64 x^4 - 112 x^3 - 84 x^2 + 73 x + 8 near x = 0.655765 approx 0.655764656558524126
+					//0.6523609648053742
+				}
+			}
+			System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
+			System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
+			//255   -> 0.6523609648053742
+			//
+			//15 bits: 0.6523519681590982
+			//16 bits: 0.6523519548560871
+			//17 bits: 0.652351949818637
+			//18 bits: 0.6523519478962301
 		}
 	}
 

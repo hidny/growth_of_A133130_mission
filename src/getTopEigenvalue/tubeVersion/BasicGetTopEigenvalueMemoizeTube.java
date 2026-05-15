@@ -21,7 +21,7 @@ public class BasicGetTopEigenvalueMemoizeTube {
 		
 		
 		
-		for(int n=22; n<=22; n++) {
+		for(int n=15; n<=15; n++) {
 			
 			System.out.println("Memorizing the answers to convert Bool:");
 			setupCovertToBoolAnswers(n);
