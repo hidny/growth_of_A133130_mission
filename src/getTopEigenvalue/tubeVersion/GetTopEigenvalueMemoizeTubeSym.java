@@ -4,6 +4,9 @@ import java.util.Hashtable;
 
 public class GetTopEigenvalueMemoizeTubeSym {
 
+	//TIDIO: for numBits <12, try num_it =300
+	// does the top eigenvector have values that are the same?
+	// I think there's group of similar values, but I don't get it yet.
 	
 	public static int TWO_POW_N_MINUS_1 = -1;
 	public static int MASK_FOR_COMPLIMENT = -1;
@@ -15,6 +18,21 @@ public class GetTopEigenvalueMemoizeTubeSym {
 		} else {
 			return n>>1;
 		}
+	}
+	
+	public static int reverseNumber(int n, int numBits) {
+		int ret = 0;
+		int cur = n;
+		
+		for(int i=0; i<numBits; i++) {
+			if( cur % 2 == 1) {
+				ret = 2* ret + 1;
+			} else {
+				ret *= 2;
+			}
+			cur /= 2;
+		}
+		return ret;
 	}
 	
 	
@@ -39,7 +57,23 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			}
 		}
 		
-		//TODO: LATER: Do complement and then do reflection.
+		//TODO: copy/paste code to be quick:
+		cur = reverseNumber(n, numBits);
+		for(int i=0; i<numBits; i++) {
+			cur = rotateRight(cur, numBits);
+			if(cur < smallest) {
+				smallest = cur;
+			}
+		}
+		
+		cur = (reverseNumber(n, numBits)) ^ MASK_FOR_COMPLIMENT;
+		for(int i=0; i<numBits; i++) {
+			cur = rotateRight(cur, numBits);
+			if(cur < smallest) {
+				smallest = cur;
+			}
+		}
+		//END TODO: copy/paste code to be quick:
 		
 		return smallest;
 	}
@@ -52,7 +86,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 		//int PERIOD_DEBUG_PER_LOOP = Math.max(1, NUM_IT/10);
 		int PERIOD_DEBUG_PER_LOOP = 1;
 		
-		for(int numBits=15; numBits<=15; numBits++) {
+		for(int numBits=19; numBits<=19; numBits++) {
 			
 			TWO_POW_N_MINUS_1 = (int)Math.pow(2, numBits - 1);
 			MASK_FOR_COMPLIMENT = (int)Math.pow(2, numBits) - 1;
@@ -113,10 +147,17 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			for(int i=0; i<vector.length; i++) {
 				System.out.println(vector[i]);
 			}
-			//TODO i to min# to index.
+			
+			//Bare minimum to adjust vector to reasonable numbers:
+			for(int i=0; i<vector.length; i++) {
+				vector[i] = 1.0;
+			}
+			//TODO: adjust vectors to even better guess so that the doesn't need as many iterations.
+			
 			
 			System.out.println("Number of orbits: " + countOrbits);
 			
+			//TODO: adjust vectors
 			
 			double curEigenvalue = 0.0;
 			for(int i=0; i<NUM_IT; i++) {
@@ -135,15 +176,10 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			System.out.println("Estimated growth rate: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
 			
 			System.out.println("Debug frequency:");
-			if(numBits < 10) {
+			if(numBits < 12) {
 				for(int i=0; i<countOrbits; i++) {
 					System.out.println(mappingIndexToNum.get(i) + " -> " + vector[i]);
 				
-					//TODO: AHA
-					// Num bits =4:
-					// Maybe it's just a coincidence :(
-					// root of 64 x^4 - 112 x^3 - 84 x^2 + 73 x + 8 near x = 0.655765 approx 0.655764656558524126
-					//0.6523609648053742
 				}
 			}
 			System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
@@ -154,6 +190,8 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			//16 bits: 0.6523519548560871
 			//17 bits: 0.652351949818637
 			//18 bits: 0.6523519478962301
+			
+			//20 bits: 0.6523519468719053 Estimated growth rate: N=20 1.8003313250318116
 		}
 	}
 

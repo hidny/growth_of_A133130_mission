@@ -1,0 +1,7 @@
+
+By brain:
+By the tolerance lemma:
+
+lim n-> inf (1/n^2) log (count_grid(n, n)) = lim w->inf lim n-> inf  (1/(w*n) log (count_grid(n, w))
+
+Brain also say that the diamond shape may have a different growth rate. I don't know.
