@@ -3,13 +3,13 @@ package getTopEigenvalue.tubeVersion;
 import java.util.Hashtable;
 
 //Ideas to make it go faster:
-// 1 ) save mapping results!
+// DONE: 1 ) save mapping results!
 // 2) Figure out where to start when comparing two layers (not always at index 0)
 // 2.1) Save carry 1 info in byte array
 // 3) make decent guess at eigenvector to being with. maybe 0.6^#pairs of switches
 
 
-public class GetTopEigenvalueMemoizeTubeSym {
+public class GetTopEigenvalueMemoizeTubeSymFast {
 
 	//TODO: for numBits <12, try num_it =300
 	// What happens to the top eigenvector?
@@ -42,6 +42,17 @@ public class GetTopEigenvalueMemoizeTubeSym {
 		return ret;
 	}
 	
+
+	public static int[] NUM_TO_MIN_NUMBER_MAPPING;
+	
+	public static void setupNumToMinNumberMapping(int numBits) {
+		
+		NUM_TO_MIN_NUMBER_MAPPING = new int[(int)Math.pow(2, numBits)];
+		
+		for(int i=0; i<NUM_TO_MIN_NUMBER_MAPPING.length; i++) {
+			NUM_TO_MIN_NUMBER_MAPPING[i] = getMinNumberConsideringNumBits(i, numBits);
+		}
+	}
 	
 	public static int getMinNumberConsideringNumBits(int n, int numBits) {
 		
@@ -89,7 +100,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 		
 		initializePow2();
 		
-		int NUM_BITS_TO_USE = 4;
+		int NUM_BITS_TO_USE = 17;
 		int NUM_IT = 30;
 		
 
@@ -109,6 +120,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			MASK_FOR_COMPLIMENT = (int)Math.pow(2, numBits) - 1;
 			
 			System.out.println("Memorizing the answers to convert Bool:");
+			setupNumToMinNumberMapping(NUM_BITS_TO_USE);
 			setupCovertToBoolAnswers(numBits);
 			System.out.println("Done Memorizing the answers to convert Bool:");
 			
@@ -120,7 +132,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			int numStatesPow2 = (int)Math.pow(2, numBits);
 			
 			for(int i=0; i<numStatesPow2; i++) {
-				if( i == getMinNumberConsideringNumBits(i, numBits)) {
+				if( i == NUM_TO_MIN_NUMBER_MAPPING[i]) {
 					countOrbits++;
 				}
 			}
@@ -131,7 +143,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			int indexOrbits = 0;
 			
 			for(int i=0; i<numStatesPow2; i++) {
-				int minNum = getMinNumberConsideringNumBits(i, numBits);
+				int minNum = NUM_TO_MIN_NUMBER_MAPPING[i];
 				
 				if(i == minNum) {
 					mappingNumToIndex.put(i, indexOrbits);
@@ -146,7 +158,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 
 			double vector[] = new double[countOrbits];
 			for(int i=0; i<numStatesPow2; i++) {
-				int doubleIndex = mappingNumToIndex.get(getMinNumberConsideringNumBits(i, numBits));
+				int doubleIndex = mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[i]);
 
 				vector[doubleIndex] += 1.0;
 			}
@@ -243,7 +255,7 @@ public class GetTopEigenvalueMemoizeTubeSym {
 					if(bitsI[0] != bitsI[bitsI.length - 1] && bitsI[bitsI.length - 1] == bitsJ[0] &&   bitsI[0] == bitsJ[bitsI.length - 1]) {
 						//pass!
 					} else {
-						newVector[i] += vector[mappingNumToIndex.get(getMinNumberConsideringNumBits(j, numBits))];
+						newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
 					}
 				}
 
