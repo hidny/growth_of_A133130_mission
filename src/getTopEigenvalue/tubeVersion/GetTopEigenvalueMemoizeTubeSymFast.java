@@ -4,9 +4,9 @@ import java.util.Hashtable;
 
 //Ideas to make it go faster:
 // DONE: 1 ) save mapping results!
-// 2) Figure out where to start when comparing two layers (not always at index 0)
-// 2.1) Save carry 1 info in byte array
-// 3) make decent guess at eigenvector to being with. maybe 0.6^#pairs of switches
+// CANCELLED (NOT FASTER!) 2) Figure out where to start when comparing two layers (not always at index 0)
+		// 2.1) Save carry 1 info in byte array
+// DONE (CRUDE): 3) make decent guess at eigenvector to being with. maybe 0.6^#pairs of switches
 
 
 public class GetTopEigenvalueMemoizeTubeSymFast {
@@ -42,6 +42,22 @@ public class GetTopEigenvalueMemoizeTubeSymFast {
 		return ret;
 	}
 	
+	public static int getNumGroups0(int num, int numBits) {
+		
+		boolean list[] = covertToBoolAnswers[num];
+		
+		int numSwitch = 1;
+		boolean cur = false;
+		for(int i=1; i<list.length; i++) {
+			if(list[i] != cur) {
+				numSwitch++;
+				cur = !cur;
+			}
+		}
+		
+		
+		return numSwitch/2;
+	}
 
 	public static int[] NUM_TO_MIN_NUMBER_MAPPING;
 	
@@ -96,6 +112,40 @@ public class GetTopEigenvalueMemoizeTubeSymFast {
 		return smallest;
 	}
 	
+	public static double[] setupBestGuessEigenvectorCrude(int numBits, int countOrbits, Hashtable <Integer, Integer> mappingNumToIndex) {
+		
+		int numStates = (int)Math.pow(2, numBits);
+		double vector[] = new double[countOrbits];
+		
+		for(int i=0; i<vector.length; i++) {
+			vector[i] = -1.0;
+		}
+		
+		for(int i=0; i<numStates; i++) {
+			int num = NUM_TO_MIN_NUMBER_MAPPING[i];
+			
+			if(num == i) {
+				int doubleIndex = mappingNumToIndex.get(num);
+				
+				if(num == 0) {
+					vector[doubleIndex] = 1.0;
+				} else {
+					vector[doubleIndex] = Math.pow(0.65, getNumGroups0(num, numBits));
+					System.out.println("Pre: " + num + " -> " + vector[doubleIndex]);
+				}
+			}
+		}
+		
+		for(int i=0; i<vector.length; i++) {
+			if(vector[i] < 0 ) {
+				System.out.println("DOH!");
+				System.exit(1);
+			}
+		}
+		
+		return vector;
+	}
+	
 	public static void main(String[] args) {
 		
 		initializePow2();
@@ -114,102 +164,105 @@ public class GetTopEigenvalueMemoizeTubeSymFast {
 			PERIOD_DEBUG_PER_LOOP *= MULT_TEMP;
 		}
 		
-		for(int numBits=NUM_BITS_TO_USE; numBits<=NUM_BITS_TO_USE; numBits++) {
-			
-			TWO_POW_N_MINUS_1 = (int)Math.pow(2, numBits - 1);
-			MASK_FOR_COMPLIMENT = (int)Math.pow(2, numBits) - 1;
-			
-			System.out.println("Memorizing the answers to convert Bool:");
-			setupNumToMinNumberMapping(NUM_BITS_TO_USE);
-			setupCovertToBoolAnswers(numBits);
-			System.out.println("Done Memorizing the answers to convert Bool:");
-			
-			
-			System.out.println();
-			System.out.println("N = " + numBits + ":");
-			
-			int countOrbits = 0;
-			int numStatesPow2 = (int)Math.pow(2, numBits);
-			
-			for(int i=0; i<numStatesPow2; i++) {
-				if( i == NUM_TO_MIN_NUMBER_MAPPING[i]) {
-					countOrbits++;
-				}
+		int numBits = NUM_BITS_TO_USE;
+		
+		TWO_POW_N_MINUS_1 = (int)Math.pow(2, numBits - 1);
+		MASK_FOR_COMPLIMENT = (int)Math.pow(2, numBits) - 1;
+		
+		System.out.println("Memorizing the answers to convert Bool:");
+		setupNumToMinNumberMapping(NUM_BITS_TO_USE);
+		setupCovertToBoolAnswers(numBits);
+		System.out.println("Done Memorizing the answers to convert Bool:");
+		
+		
+		System.out.println();
+		System.out.println("N = " + numBits + ":");
+		
+		int countOrbits = 0;
+		int numStatesPow2 = (int)Math.pow(2, numBits);
+		
+		for(int i=0; i<numStatesPow2; i++) {
+			if( i == NUM_TO_MIN_NUMBER_MAPPING[i]) {
+				countOrbits++;
 			}
-			
-			
-			Hashtable <Integer, Integer> mappingNumToIndex = new Hashtable <Integer, Integer>();
-			Hashtable <Integer, Integer> mappingIndexToNum = new Hashtable <Integer, Integer>();
-			int indexOrbits = 0;
-			
-			for(int i=0; i<numStatesPow2; i++) {
-				int minNum = NUM_TO_MIN_NUMBER_MAPPING[i];
-				
-				if(i == minNum) {
-					mappingNumToIndex.put(i, indexOrbits);
-					mappingIndexToNum.put(indexOrbits, i);
-					
-					System.out.println(i + " --> " + indexOrbits);
-					System.out.println();
-					
-					indexOrbits++;
-				}
-			}
-
-			double vector[] = new double[countOrbits];
-			for(int i=0; i<numStatesPow2; i++) {
-				int doubleIndex = mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[i]);
-
-				vector[doubleIndex] += 1.0;
-			}
-			System.out.println("Vector:");
-			for(int i=0; i<vector.length; i++) {
-				System.out.println(vector[i]);
-			}
-			
-			//Bare minimum to adjust vector to reasonable numbers:
-			for(int i=0; i<vector.length; i++) {
-				vector[i] = 1.0;
-			}
-			//TODO: adjust vectors to even better guess so that the doesn't need as many iterations.
-			
-			System.out.println("Number of orbits: " + countOrbits);
-			
-			
-			double curEigenvalue = 0.0;
-			for(int i=0; i<NUM_IT; i++) {
-				vector = multCurrentVection(vector, numBits, mappingNumToIndex, mappingIndexToNum);
-				curEigenvalue = vector[0];
-				vector = normalizeVector(vector);
-				
-				if(i % PERIOD_DEBUG_PER_LOOP == 0) {
-					
-					System.out.println("Current eigenvalue: " + curEigenvalue);
-				}
-			}
-			
-			System.out.println("Final eigenvalue: " + curEigenvalue);
-			
-			System.out.println("Estimated growth rate: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
-			
-			System.out.println("Debug frequency:");
-			if(numBits <= 12) {
-				for(int i=0; i<countOrbits; i++) {
-					System.out.println(mappingIndexToNum.get(i) + " -> " + vector[i]);
-				
-				}
-			}
-			System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
-			System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
-			//255   -> 0.6523609648053742
-			//
-			//15 bits: 0.6523519681590982
-			//16 bits: 0.6523519548560871
-			//17 bits: 0.652351949818637
-			//18 bits: 0.6523519478962301
-			//19 bits: 0.6523519471574133
-			//20 bits: 0.6523519468719053 Estimated growth rate: N=20 1.8003313250318116
 		}
+		
+		
+		Hashtable <Integer, Integer> mappingNumToIndex = new Hashtable <Integer, Integer>();
+		Hashtable <Integer, Integer> mappingIndexToNum = new Hashtable <Integer, Integer>();
+		int indexOrbits = 0;
+		
+		for(int i=0; i<numStatesPow2; i++) {
+			int minNum = NUM_TO_MIN_NUMBER_MAPPING[i];
+			
+			if(i == minNum) {
+				mappingNumToIndex.put(i, indexOrbits);
+				mappingIndexToNum.put(indexOrbits, i);
+				
+				System.out.println(i + " --> " + indexOrbits);
+				System.out.println();
+				
+				indexOrbits++;
+			}
+		}
+
+		double vector[] = new double[countOrbits];
+		for(int i=0; i<numStatesPow2; i++) {
+			int doubleIndex = mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[i]);
+
+			vector[doubleIndex] += 1.0;
+		}
+		System.out.println("Vector:");
+		for(int i=0; i<vector.length; i++) {
+			System.out.println(vector[i]);
+		}
+		
+		//Bare minimum to adjust vector to reasonable numbers:
+		for(int i=0; i<vector.length; i++) {
+			vector[i] = 1.0;
+			
+		}
+		
+		vector = setupBestGuessEigenvectorCrude(numBits, countOrbits, mappingNumToIndex);
+		
+		//TODO: adjust vectors to even better guess so that the doesn't need as many iterations.
+		
+		System.out.println("Number of orbits: " + countOrbits);
+		
+		
+		double curEigenvalue = 0.0;
+		for(int i=0; i<NUM_IT; i++) {
+			vector = multCurrentVection(vector, numBits, mappingNumToIndex, mappingIndexToNum);
+			curEigenvalue = vector[0];
+			vector = normalizeVector(vector);
+			
+			if(i % PERIOD_DEBUG_PER_LOOP == 0) {
+				
+				System.out.println("Current eigenvalue: " + curEigenvalue);
+			}
+		}
+		
+		System.out.println("Final eigenvalue: " + curEigenvalue);
+		
+		System.out.println("Estimated growth rate: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
+		
+		System.out.println("Debug frequency:");
+		if(numBits <= 12) {
+			for(int i=0; i<countOrbits; i++) {
+				System.out.println(mappingIndexToNum.get(i) + " -> " + vector[i]);
+			
+			}
+		}
+		System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
+		System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
+		//255   -> 0.6523609648053742
+		//
+		//15 bits: 0.6523519681590982
+		//16 bits: 0.6523519548560871
+		//17 bits: 0.652351949818637
+		//18 bits: 0.6523519478962301
+		//19 bits: 0.6523519471574133
+		//20 bits: 0.6523519468719053 Estimated growth rate: N=20 1.8003313250318116
 	}
 
 
