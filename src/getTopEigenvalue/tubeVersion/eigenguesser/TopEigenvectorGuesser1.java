@@ -1,28 +1,8 @@
-package getTopEigenvalue.tubeVersion;
+package getTopEigenvalue.tubeVersion.eigenguesser;
 
 import java.util.Hashtable;
 
-//Ideas to make it go faster:
-// DONE: 1 ) save mapping results!
-// CANCELLED (NOT FASTER!) 2) Figure out where to start when comparing two layers (not always at index 0)
-		// 2.1) Save carry 1 info in byte array
-// DONE (CRUDE): 3) make decent guess at eigenvector to being with. maybe 0.6^#pairs of switches
-
-//Current eigenvalue: 414718.7164577278
-//Current eigenvalue: 414718.71645763295
-//Current eigenvalue: 414718.71645765455
-//...
-//Current eigenvalue: 414718.71645763295
-//Current eigenvalue: 414718.71645765455
-//Current eigenvalue: 414718.71645765763
-//Current eigenvalue: 414718.71645765746
-//Current eigenvalue: 414718.71645765746 (matches prev)
-//...
-//Current eigenvalue: 414718.71645765746
-//N=21 estimate: Current eigenvalue: 414718.71645765455 (iteration 17)
-//17 in 2.75 days vs 2 in 3.5 hours
-
-public class GetTopEigenvalueMemoizeTubeSymFast {
+public class TopEigenvectorGuesser1 {
 
 	//TODO: for numBits <12, try num_it =300
 	// What happens to the top eigenvector?
@@ -163,7 +143,7 @@ public class GetTopEigenvalueMemoizeTubeSymFast {
 		
 		initializePow2();
 		
-		int NUM_BITS_TO_USE = 22;
+		int NUM_BITS_TO_USE = 15;
 		int NUM_IT = 30;
 		
 
@@ -455,52 +435,4 @@ public class GetTopEigenvalueMemoizeTubeSymFast {
 341 -> 0.13529382095650117
 
  */
-
-/*
-// TODO: untested custom hash: (It might be useful, but I'm not sure)
-public static boolean customHash[] = null;
-
-public static int getMaxNumBitsOrbit(int numOrbits) {
-	int curLength = 0;
-	
-	int cur = 1;
-	int MULT = 2;
-	
-	while(numOrbits >= cur) {
-		curLength++;
-		cur *= MULT;
-	}
-	
-	return curLength;
-}
-
-public static void setupCustomHash(int maxBitsNumOrbits, int numBits) {
-	
-	customHash = new boolean[maxBitsNumOrbits * ((int)Math.pow(2, numBits))];
-	
-	for(int i=0; i<(int)Math.pow(2, numBits); i++) {
-		
-		int min = getMinNumberConsideringNumBits(i, numBits);
-		
-		boolean table[] = convertToBoolSlow(min, maxBitsNumOrbits);
-		
-		for(int j=0; j<maxBitsNumOrbits; j++) {
-			customHash[maxBitsNumOrbits * i + j] = table[j];
-		}
-	}
-}
-
-public static int getHash(int num, int maxBitsNumOrbits) {
-	int ret = 0;
-	
-	for(int i=maxBitsNumOrbits*num; i<maxBitsNumOrbits*(num+1); i++) {
-		
-		if(customHash[i]) {
-			ret = 2*ret + 1;
-		} else {
-			ret *= 2;
-		}
-	}
-	return ret;
-}*/
 

@@ -26,7 +26,11 @@ public class findingGEstimate {
 			1.8003313280347228,
 			1.8003313258745517,
 			1.8003313250318118,
-			1.8003313247016295};
+			1.8003313247016295,
+			1.8003313245717635};
+		
+		//old:   1.8003313244887489
+		//vs new 1.8003313244880341
 		
 		double diffs[] = new double[numbers.length - 1];
 		for(int i=0; i<numbers.length; i++) {
