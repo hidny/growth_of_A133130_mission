@@ -2,6 +2,28 @@ package getTopEigenvalue.tubeVersion;
 
 import java.util.Hashtable;
 
+/* Answer for N=21:
+ * Current eigenvalue: 230356.88566077154
+Current eigenvalue: 230356.8856607727
+Final eigenvalue: 230356.8856607727
+Estimated growth rate: 1.8003313247016297
+Debug frequency:
+Debug 2nd one because it's tending to something as numbits increase!
+1 -> 0.6523519467608724
+
+ */
+/*
+Answer for N=22 from this class: (May 18th, 2026. Happy Birthday Gab)
+Current eigenvalue: 414718.71645765746
+Current eigenvalue: 414718.71645765746
+Final eigenvalue: 414718.71645765746
+Estimated growth rate: 1.8003313245717636
+
+Debug frequency:
+Debug 2nd one because it's tending to something as numbits increase!
+1 -> 0.6523519467176729
+
+ */
 //Ideas to make it go faster:
 // DONE: 1 ) save mapping results!
 // CANCELLED (NOT FASTER!) 2) Figure out where to start when comparing two layers (not always at index 0)
@@ -163,7 +185,7 @@ public class GetTopEigenvalueMemoizeTubeSymFast {
 		
 		initializePow2();
 		
-		int NUM_BITS_TO_USE = 22;
+		int NUM_BITS_TO_USE = 21;
 		int NUM_IT = 30;
 		
 

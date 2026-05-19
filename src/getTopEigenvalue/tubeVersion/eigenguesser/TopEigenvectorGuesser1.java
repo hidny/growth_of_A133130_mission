@@ -39,9 +39,12 @@ public class TopEigenvectorGuesser1 {
 		
 		boolean list[] = covertToBoolAnswers[num];
 		
+		if(num == 5461) {
+			System.out.println("Debug!");
+		}
 		int numSwitch = 1;
 		boolean cur = false;
-		for(int i=1; i<list.length; i++) {
+		for(int i=0; i<list.length; i++) {
 			if(list[i] != cur) {
 				numSwitch++;
 				cur = !cur;
@@ -105,6 +108,17 @@ public class TopEigenvectorGuesser1 {
 		return smallest;
 	}
 	
+	public static double getPredictionOfEigenvectorValueForState(int num, int numBits, Hashtable <Integer, Integer> mappingNumToIndex) {
+		double ret = 0.0;
+		if(num == 0) {
+			ret = 1.0;
+		} else {
+			ret = Math.pow(0.65, getNumGroups0(num, numBits));
+		}
+		
+		return ret;
+	}
+	
 	public static double[] setupBestGuessEigenvectorCrude(int numBits, int countOrbits, Hashtable <Integer, Integer> mappingNumToIndex) {
 		
 		int numStates = (int)Math.pow(2, numBits);
@@ -120,12 +134,10 @@ public class TopEigenvectorGuesser1 {
 			if(num == i) {
 				int doubleIndex = mappingNumToIndex.get(num);
 				
-				if(num == 0) {
-					vector[doubleIndex] = 1.0;
-				} else {
-					vector[doubleIndex] = Math.pow(0.65, getNumGroups0(num, numBits));
-					System.out.println("Pre: " + num + " -> " + vector[doubleIndex]);
-				}
+				vector[doubleIndex] = getPredictionOfEigenvectorValueForState(num, numBits, mappingNumToIndex);
+				
+				System.out.println("Prediction of eigenvector value: " + num + " -> " + vector[doubleIndex]);
+				
 			}
 		}
 		
@@ -143,7 +155,7 @@ public class TopEigenvectorGuesser1 {
 		
 		initializePow2();
 		
-		int NUM_BITS_TO_USE = 15;
+		int NUM_BITS_TO_USE = 17;
 		int NUM_IT = 30;
 		
 
@@ -240,14 +252,15 @@ public class TopEigenvectorGuesser1 {
 		System.out.println("Estimated growth rate: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
 		
 		System.out.println("Debug frequency:");
-		if(numBits <= 12) {
+		System.out.println("State Number (convert binary),eigenvector value, predicted eigenvector");
+		if(numBits <= 17) {
 			for(int i=0; i<countOrbits; i++) {
-				System.out.println(mappingIndexToNum.get(i) + " -> " + vector[i]);
+				System.out.println(mappingIndexToNum.get(i) + ", " + vector[i] + ", " + getPredictionOfEigenvectorValueForState(mappingIndexToNum.get(i), numBits, mappingNumToIndex));
 			
 			}
 		}
 		System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
-		System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
+		System.out.println(mappingIndexToNum.get(1) + "-> " + vector[1]);
 		//255   -> 0.6523609648053742
 		//
 		//15 bits: 0.6523519681590982
@@ -365,74 +378,4 @@ public class TopEigenvectorGuesser1 {
 // Num bits=10 and 11
 // mersenne nums are about 0.6 of the blank index for some reason
 //
-
-//TODO: Chart this! I think there's a quantum like orbitals...
-//TODO: figure out a model for predicting the ball-park of these values.
-//hint: definitely look at the binary sequaence.
-/*
- * 0 -> 1.0
-1 -> 0.6523530799300028
-3 -> 0.6032853194810823
-5 -> 0.4382664734570725
-7 -> 0.6005871745237986
-9 -> 0.4259007610541303
-11 -> 0.4122422617171067
-15 -> 0.599978277644776
-17 -> 0.4256423105411273
-19 -> 0.3942966375859586
-21 -> 0.2957874230142158
-23 -> 0.41102777333167134
-27 -> 0.3929374028380487
-31 -> 0.5998597810423094
-33 -> 0.42557543835805944
-35 -> 0.393713282069051
-37 -> 0.286214939879606
-39 -> 0.3925755975261789
-43 -> 0.2792522490842242
-45 -> 0.2818882860483179
-47 -> 0.4107588291672537
-51 -> 0.3657857148338451
-55 -> 0.3922776106173019
-67 -> 0.39360182925541465
-69 -> 0.2859830205955336
-71 -> 0.3919806232367851
-73 -> 0.27806877129009044
-75 -> 0.26929612083807236
-77 -> 0.26945636215862456
-79 -> 0.3922064967183102
-83 -> 0.26515230544553337
-85 -> 0.19984812673076222
-87 -> 0.27855484784520085
-91 -> 0.268874767507979
-93 -> 0.28136731664890413
-99 -> 0.36444076273176024
-103 -> 0.3643291143217508
-107 -> 0.2645000371080668
-119 -> 0.39172506094123355
-137 -> 0.2779412206681381
-139 -> 0.269114117895138
-147 -> 0.2575398846734057
-149 -> 0.19323046444146985
-151 -> 0.26860672707929417
-153 -> 0.2577575345154298
-155 -> 0.2569464783973418
-157 -> 0.2687520299521409
-163 -> 0.2647141462044592
-165 -> 0.19243974597998886
-167 -> 0.26414574337963653
-171 -> 0.18894839827907345
-173 -> 0.19106847497902715
-179 -> 0.25016727097935854
-199 -> 0.36317573150768956
-203 -> 0.24984696715928306
-219 -> 0.25683292648513545
-293 -> 0.18707308413504817
-299 -> 0.18275380990528706
-301 -> 0.18438510562570432
-307 -> 0.23954996132966547
-331 -> 0.1815280528267774
-339 -> 0.17949718635972842
-341 -> 0.13529382095650117
-
- */
 

@@ -197,6 +197,8 @@ public class GetTopEigenvalueMemoizeTubeSym {
 			//18 bits: 0.6523519478962301
 			//19 bits: 0.6523519471574133
 			//20 bits: 0.6523519468719053 Estimated growth rate: N=20 1.8003313250318116
+			//
+			//22 bits: 0.6523519467176729 Estimated growth rate: N=22 1.8003313245717636
 		}
 	}
 

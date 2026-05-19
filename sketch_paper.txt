@@ -1,0 +1,58 @@
+
+
+On Square Binary Grid with no 2x2 subset with all the same number.
+
+
+Abstract:
+oeis links. Superset of self-avoiding walks accoss the square. (Maybe in content, give a few hops in between).
+Correlated mess. Best approx is 1.800331324480 to  1.800331324490 (i.e: confident about the first 11 significant figures.
+Need help...
+
+Intro:
+
+(whatever)
+
+Equivs:
+2x2 all 1s or all 0s = 2x2 checkerboard pattern
+= shapes made from 1s where corners don't touch = shapes made from 0s where corners don't touch.
+
+Expansion Tolerance lemma
+
+prove
+limit n-> inf f(n, n)^(1/n^2) = limit w->inf ( lim n-> inf f(w, n)^(1/(n*w)) )
+
+prove
+limit w->inf ( lim n-> inf f(w, n)^(1/(n*w)) ) = limit w->inf ( lim n-> inf cylinder(w, n)^(1/(n*w)) )
+
+TODO: show picture of matrix for width 6? (both symmetric and assymtric)
+(They are both beautiful and intimidating...)
+
+Cyclinder is better for approx
+
+
+
+TODO:
+Explain how approx with cylinder.
+
+Show best guess.
+
+Explain Naive approach
+
+Show algo to estimate eigenvector and how it's related to naive approach.
+(Or just explain rules of thumb?)
+
+TODO: do triangles.
+
+TODO: explain hex grid version is easy.
+
+TODO:
+suggest # states simple-phase net is equal to # states * catalan numbers
+
+Separately, estimate the 1.74455 ish number for simple-phase nets using the conjecture.
+ 
+
+Conclusion:
+
+Interesting numbers. Don't have the tech to solve it.
+
+

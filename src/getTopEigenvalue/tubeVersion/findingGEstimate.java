@@ -27,7 +27,7 @@ public class findingGEstimate {
 			1.8003313258745517,
 			1.8003313250318118,
 			1.8003313247016295,
-			1.8003313245717635};
+			1.8003313245717636};
 		
 		//old:   1.8003313244887489
 		//vs new 1.8003313244880341
@@ -52,6 +52,8 @@ public class findingGEstimate {
 			}
 		}
 		
+		System.out.println();
+		System.out.println();
 		//Extrapolate ration 0.4:
 		//1.8003313244815078
 		//Extrapolate ration 0.393:
