@@ -3,10 +3,6 @@ package getTopEigenvalue.tubeVersion;
 import java.util.Hashtable;
 
 public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
-
-	//TODO: for numBits <12, try num_it =300
-	// What happens to the top eigenvector?
-	// I think there's group of similar values, but I don't get it yet.
 	
 	public static int TWO_POW_N_MINUS_1 = -1;
 	public static int MASK_FOR_COMPLIMENT = -1;
@@ -48,7 +44,6 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 			}
 		}
 		
-		
 		return numSwitch/2;
 	}
 
@@ -65,8 +60,6 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 	
 	public static int getMinNumberConsideringNumBits(int n, int numBits) {
 		
-		//int mask = (int)Math.pow(2, numBits) - 1;
-
 		int cur = n;
 		int smallest = n;
 		for(int i=0; i<numBits; i++) {
@@ -141,9 +134,7 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		initializePow2();
-		
-		int NUM_BITS_TO_USE = 22;
+		int NUM_BITS_TO_USE = 17;
 		int NUM_IT = 30;
 		
 
@@ -250,21 +241,6 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 		System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
 	}
 
-
-	public static void initializePow2() {
-		//TODO: 33????
-		pow2 = new int[32];
-		
-		pow2[0] = 1;
-		
-		for(int i=1; i<pow2.length; i++ ) {
-			pow2[i] = 2 * pow2[i-1];
-		}
-	}
-	public static int pow2[] = null;
-	
-	
-	
 	
 	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
 		
@@ -277,67 +253,90 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 
 			int belowLayer = mappingIndexToNum.get(i);
 			
-			//TODO:
 			boolean checkAround = ((belowLayer & LEFT_HAND_SIDE_CELL) ^ ((belowLayer%2) << (numBits-1))) != 0;
 			
 			int lhsToCheck = (belowLayer ^ (belowLayer << 1));
 			
-			for(int j=0; j<Math.pow(2, numBits); ) {
-				
-				int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
-				if( tmpCheckProb != 0) {
-					//Collision!
+			if(checkAround) {
+				for(int j=0; j<Math.pow(2, numBits); ) {
 					
-					/*
-					 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
-
-					public static int highestOneBit(int i) {
-					    i |= (i >>  1);
-					    i |= (i >>  2);
-					    i |= (i >>  4);
-					    i |= (i >>  8);
-					    i |= (i >> 16);
-					    return i - (i >>> 1);
+					int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
+					if( tmpCheckProb != 0) {
+						//Collision:
+						
+						/*
+						 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
+	
+						public static int highestOneBit(int i) {
+						    i |= (i >>  1);
+						    i |= (i >>  2);
+						    i |= (i >>  4);
+						    i |= (i >>  8);
+						    i |= (i >> 16);
+						    return i - (i >>> 1);
+						}
+						*/
+						//find the index to the right of the leftmost bit:
+						int getHighestBit = tmpCheckProb >> 1;
+						//Copied algo that's O(log(size)) instead of just O(size):
+						getHighestBit |= (getHighestBit >>  1);
+						getHighestBit |= (getHighestBit >>  2);
+						getHighestBit |= (getHighestBit >>  4);
+						getHighestBit |= (getHighestBit >>  8);
+						getHighestBit |= (getHighestBit >> 16);
+						
+						int answer = getHighestBit - (getHighestBit >>> 1);
+					    j += answer;
+						if(j<0) {
+							System.exit(1);
+						}
+						continue;
 					}
-					*/
-					//TODO: try to understand this:
-					int getHighestBit = tmpCheckProb >> 1;
-					getHighestBit |= (getHighestBit >>  1);
-					getHighestBit |= (getHighestBit >>  2);
-					getHighestBit |= (getHighestBit >>  4);
-					getHighestBit |= (getHighestBit >>  8);
-					getHighestBit |= (getHighestBit >> 16);
 					
-					int answer = getHighestBit - (getHighestBit >>> 1);
-					//System.out.println();
-					//System.out.println("tmpCheckProb: " + tmpCheckProb);
-					//System.out.println("answer: " + answer);
-				    j += answer;
-					//System.out.println("j: " + j);
-					if(j<0) {
-						System.exit(1);
+					boolean checkAroundJ = ((j & LEFT_HAND_SIDE_CELL) ^ ((j%2) << (numBits-1))) != 0;
+					
+					if(checkAroundJ && (j + belowLayer) % 2 == 1) {
+						//Collision when wrapping around:
+						j++;
+						continue;
 					}
-					continue;
-				}
-				
-				boolean checkAroundJ = ((j & LEFT_HAND_SIDE_CELL) ^ ((j%2) << (numBits-1))) != 0;
-				//checkAround condition could go outside the loop later...
-				if(checkAround && checkAroundJ && (j + belowLayer) % 2 == 1) {
-					//Collision TODO
+					
+					//No Collision:
+					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
 					j++;
-					continue;
+					
 				}
-				
-				//System.out.println("J: " + j)
-				//No Collision
-				newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
-				j++;
-				
+			} else {
+				//Copy-paste code in the hopes of getting an efficiency gain:
+				for(int j=0; j<Math.pow(2, numBits); ) {
+					
+					int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
+					if( tmpCheckProb != 0) {
+						//Collision!
+						
+						int getHighestBit = tmpCheckProb >> 1;
+						getHighestBit |= (getHighestBit >>  1);
+						getHighestBit |= (getHighestBit >>  2);
+						getHighestBit |= (getHighestBit >>  4);
+						getHighestBit |= (getHighestBit >>  8);
+						getHighestBit |= (getHighestBit >> 16);
+						
+						int answer = getHighestBit - (getHighestBit >>> 1);
+						
+					    j += answer;
+						continue;
+					}
+					
+					//No Collision:
+					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
+					j++;
+					
+				}
+				//END Copy-paste code in the hopes of getting an efficiency gain:
 			}
 			
 		}
-		
-		
+				
 		return newVector;
 	}
 	
@@ -386,5 +385,3 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 	}
 
 }
-
-//TODO: remove pow2[]
