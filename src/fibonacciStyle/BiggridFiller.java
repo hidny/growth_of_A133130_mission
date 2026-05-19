@@ -2,12 +2,15 @@ package fibonacciStyle;
 
 public class BiggridFiller {
 
+	//This is a deadend! It is only the way to add the last row. 2nd last row is more complicated!
+	// 2.0/(sqrt(17) -3.0) = 1.7807764064044151374553524639935192562867998063434051085996
+	
 	public static void main(String[] args) {
 		setupFibonnaci();
 		
 		//sanityTests();
 		
-		double constantGuess = testForConstant(1000, 1000);
+		double constantGuess = testForConstant(10000, 100);
 	
 		//Guess at the constant: 1.7951362393174088 (too low)
 		System.out.println("Guess at the constant: " + constantGuess);

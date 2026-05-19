@@ -7,7 +7,7 @@ public class LatinSquare2by2Efficiency {
 
 	public static void main(String[] args) {
 		
-		BigInteger numSolutions = solve(8);
+		BigInteger numSolutions = solve(4);
 		
 		System.out.println("Number of solutions found: " + numSolutions);
 
@@ -15,7 +15,7 @@ public class LatinSquare2by2Efficiency {
 	
 	public static final int UNDETERMINED = -1;
 	
-	public static int[][] initTalbe(int n) {
+	public static int[][] initTable(int n) {
 
 		int solution[][] = new int[n][n];
 		
@@ -32,27 +32,40 @@ public class LatinSquare2by2Efficiency {
 		return solution;
 	}
 	
+	public static int[][] initTalbePrevDigitMap(int n) {
+		int digitIFromRowIOutputJ[][] = new int[n][n];
+		
+		for(int j=0; j<n; j++) {
+			digitIFromRowIOutputJ[j][0] = j;
+		}
+		
+		for(int i=0; i<n; i++) {
+			digitIFromRowIOutputJ[i][i] = 0;
+		}
+		
+		
+		return digitIFromRowIOutputJ;
+	}
+	
 	public static BigInteger solve(int n) { 
 		
 		if(n<2) {
 			return BigInteger.ONE;
 		}
 		
-		//TODO: Maybe start at -1?
-		int solution[][] = initTalbe(n);
+		int solution[][] = initTable(n);
 		
 		System.out.print("Start cofig:");
 		System.out.println(tableToString(solution));
 		
-		//TODO: do it the simple way 1st:
 		boolean used2x2[][] = new boolean[solution.length][solution.length];
-		int indexused2x2PrevI[][] = new int[solution.length][solution.length];
-		int indexused2x2PrevJ[][] = new int[solution.length][solution.length];
+		int digitIFromRowIOutputTopLeftI[][] = new int[solution.length][solution.length];
+		int digitIFromRowIOutputTopLeftJ[][] = new int[solution.length][solution.length];
+		boolean isBottomRight2x2[][] = new boolean[solution.length][solution.length];;
 		int curNum2x2Boxes = 0;
 		
-		int digitIIndexrowJ[][] = new int[solution.length][solution.length];
+		int digitIFromRowIOutputJ[][] = initTalbePrevDigitMap(n);
 		
-		//END TODO
 		
 		
 		int usedOrder[][] = new int[solution.length][solution.length];
@@ -88,6 +101,7 @@ public class LatinSquare2by2Efficiency {
 
 			boolean keepGoing = false;
 
+			//System.out.println("New loop " + i + ", " + j);
 			//Digit trial
 			for(int k=solution[i][j] + 1; k<n; k++) {
 				if(used[i][k] || k == i) {
@@ -104,7 +118,83 @@ public class LatinSquare2by2Efficiency {
 				if(foundAbove) {
 					continue;
 				}
+				boolean twoByTwoDenied = false;
+				for(int prevI=1; prevI<i; prevI++) {
+					
+					int prevJ = digitIFromRowIOutputJ[k][prevI];
+					
+					/*if(k== 0) {
+						System.out.println("TEST k = 0 (2)");
+
+						int printedSolution[][] = addOneToTable(solution);
+						System.out.println(tableToString(printedSolution));
+						System.out.println("END TEST k = 0 (2)");
+					}*/
+					
+					if(prevJ > 0 && prevJ < j && solution[i][prevJ] == solution[prevI][j] ) {
+						/*if(k== 0) {
+							System.out.println("TEST k = 0");
+							int printedSolution[][] = addOneToTable(solution);
+							System.out.println(tableToString(printedSolution));
+							System.out.println("END TEST k = 0");
+						}*/
+						
+						if(k == solution[prevI][prevJ] && ! used2x2[prevI][prevJ] && ! used2x2[i][prevJ] && ! used2x2[prevI][j]) {
+							
+							if(solution[i][prevJ] < k) {
+							
+								//TODO: BUG! you have to swap it and check if the swapped square would have a 2x2 block exactly 
+								// where this 2x2 block is.
+								
+								System.out.println("DENIAL TEST for k = " + (k+1));
+								int printedSolution[][] = addOneToTable(solution);
+								System.out.println(tableToString(printedSolution));
+								System.out.println(prevJ + ", " +prevI + " to " + i + ", " + j);
+								System.out.println("END DENIAL TEST");
+								twoByTwoDenied = true;
+								break;
+								
+							} else {
+								System.out.println("???");
+
+								if(used2x2[i][j]) {
+									System.out.println("oops 1!");
+									System.exit(1);
+								}
+								
+								used2x2[prevI][prevJ] = true;
+								used2x2[i][prevJ] = true;
+								used2x2[prevI][j] = true;
+								used2x2[i][j] = true;
+
+								isBottomRight2x2[i][j] = true;
+								curNum2x2Boxes++;
+								
+								//int indexused2x2PrevI[][] = new int[solution.length][solution.length];
+								//int indexused2x2PrevJ[][] = new int[solution.length][solution.length];
+								//int curNum2x2Boxes = 0;
+								digitIFromRowIOutputTopLeftI[k][i] = prevI;
+								digitIFromRowIOutputTopLeftJ[k][i] = prevJ;
+								
+								System.out.println("----------");
+								System.out.println("TEST 2x2:");
+								System.out.println("Made box: " + prevI + ", " + prevJ + " to " + i + ", " + j);
+								int printedSolution[][] = addOneToTable(solution);
+								System.out.println(tableToString(printedSolution));
+								System.out.println("New k: " + (k+1));
+								System.out.println("END TEST 2x2:");
+								System.out.println("----------");
+								
+							}
+						}
+					}
+				}
+				if(twoByTwoDenied) {
+					System.out.println("DENIAL TEST2");
+					continue;
+				}
 				
+				digitIFromRowIOutputJ[k][i] = j;
 				solution[i][j] = k;
 				
 				usedOrder[i][j] = k;
@@ -132,11 +222,11 @@ public class LatinSquare2by2Efficiency {
 						if(n <= 6 || debugIter % 1000000 == 0) {
 							int printedSolution[][] = addOneToTable(solution);
 							
-							System.out.println("Found solution:");
+							System.out.println("Found solution with weight: " + TWO.pow(curNum2x2Boxes));
 							System.out.println(tableToString(printedSolution));
 							
+							
 						}
-						
 						numSolutions = numSolutions.add(TWO.pow(curNum2x2Boxes));
 						i--;
 						j = n-1;
@@ -147,11 +237,32 @@ public class LatinSquare2by2Efficiency {
 			
 			if(goBack) {
 
+				if(isBottomRight2x2[i][j]) {
+					isBottomRight2x2[i][j] = false;
+					curNum2x2Boxes--;
+					
+					int oldI = digitIFromRowIOutputTopLeftI[solution[i][j]][i];
+					int oldJ = digitIFromRowIOutputTopLeftJ[solution[i][j]][i];
+					used2x2[i][j] = false;
+					used2x2[oldI][j] = false;
+					used2x2[i][oldJ] = false;
+					used2x2[oldI][oldJ] = false;
+					System.out.println("Remove 2x2 box 1 for (i, j) = " + i + ", " + j + " (solution[i][j]: " + solution[i][j] + ")");
+					System.out.println("(oldi, oldj) = " + oldI + ", " + oldJ);
+					
+				}
+				if(used2x2[i][j]) {
+					System.out.println("Oops2! (i, j) = " + i + ", " + j);
+					System.exit(1);
+				}
+				
 				solution[i][j] = UNDETERMINED;
 				if(usedOrder[i][j] >= 0) {
 					used[i][usedOrder[i][j]] = false;
 				}
 				usedOrder[i][j] = UNDETERMINED;
+				
+				
 				
 				j--;
 				if(j < 1) {
@@ -162,22 +273,32 @@ public class LatinSquare2by2Efficiency {
 						break SEARCH;
 					}
 				}
+				
 				if(usedOrder[i][j] >= 0) {
 					used[i][usedOrder[i][j]] = false;
 				}
 				usedOrder[i][j] = UNDETERMINED;
 				
-				if(used2x2[i][j]) {
+
+				if(isBottomRight2x2[i][j]) {
+					isBottomRight2x2[i][j] = false;
+					curNum2x2Boxes--;
+
+					int oldI = digitIFromRowIOutputTopLeftI[solution[i][j]][i];
+					int oldJ = digitIFromRowIOutputTopLeftJ[solution[i][j]][i];
 					used2x2[i][j] = false;
-					int oldI = indexused2x2PrevI[i][j];
-					int oldJ = indexused2x2PrevJ[i][j];
 					used2x2[oldI][j] = false;
 					used2x2[i][oldJ] = false;
 					used2x2[oldI][oldJ] = false;
+					System.out.println("Remove 2x2 box 2 for (i, j) = " + i + ", " + j);
+					System.out.println("(oldi, oldj) = " + oldI + ", " + oldJ);
 					
-					curNum2x2Boxes--;
-					//TODO: maybe there's more to it?
 				}
+				if(used2x2[i][j]) {
+					System.out.println("Oops3! (i, j) = " + i + ", " + j);
+					System.exit(1);
+				}
+				
 			}
 			
 			
