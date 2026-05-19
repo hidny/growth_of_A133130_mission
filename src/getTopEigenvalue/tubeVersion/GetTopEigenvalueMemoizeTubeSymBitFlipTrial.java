@@ -287,9 +287,7 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 						
 						int answer = getHighestBit - (getHighestBit >>> 1);
 					    j += answer;
-						if(j<0) {
-							System.exit(1);
-						}
+					    
 						continue;
 					}
 					
