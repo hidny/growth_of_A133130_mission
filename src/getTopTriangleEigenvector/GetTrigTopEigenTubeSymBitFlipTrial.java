@@ -1,47 +1,18 @@
-package getTopEigenvalue.tubeVersion;
+package getTopTriangleEigenvector;
 
 import java.util.Hashtable;
 
-public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
+public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static int MASK_FOR_COMPLIMENT = -1;
 	
 	public static int rotateRight(int n, int numBits) {
 		
-		return (n >> 1) + ((n << numBits - 1) & MASK_FOR_COMPLIMENT);
+		return n >> 2+ (n << (numBits-2)) & MASK_FOR_COMPLIMENT;
+		
 	}
 	
-	public static int reverseNumber(int n, int numBits) {
-		int ret = 0;
-		int cur = n;
-		
-		for(int i=0; i<numBits; i++) {
-			if( cur % 2 == 1) {
-				ret = 2* ret + 1;
-			} else {
-				ret *= 2;
-			}
-			cur /= 2;
-		}
-		return ret;
-	}
 	
-	public static int getNumGroups0(int num, int numBits) {
-		
-		boolean list[] = covertToBoolAnswers[num];
-		
-		int numSwitch = 1;
-		boolean cur = false;
-		for(int i=1; i<list.length; i++) {
-			if(list[i] != cur) {
-				numSwitch++;
-				cur = !cur;
-			}
-		}
-		
-		return numSwitch/2;
-	}
-
 	public static int[] NUM_TO_MIN_NUMBER_MAPPING;
 	
 	public static void setupNumToMinNumberMapping(int numBits) {
@@ -72,66 +43,19 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 			}
 		}
 		
-		//TODO: copy/paste code to be quick:
-		cur = reverseNumber(n, numBits);
-		for(int i=0; i<numBits; i++) {
-			cur = rotateRight(cur, numBits);
-			if(cur < smallest) {
-				smallest = cur;
-			}
-		}
-		
-		cur = (reverseNumber(n, numBits)) ^ MASK_FOR_COMPLIMENT;
-		for(int i=0; i<numBits; i++) {
-			cur = rotateRight(cur, numBits);
-			if(cur < smallest) {
-				smallest = cur;
-			}
-		}
-		//END TODO: copy/paste code to be quick:
 		
 		return smallest;
 	}
 	
-	public static double[] setupBestGuessEigenvectorCrude(int numBits, int countOrbits, Hashtable <Integer, Integer> mappingNumToIndex) {
-		
-		int numStates = (int)Math.pow(2, numBits);
-		double vector[] = new double[countOrbits];
-		
-		for(int i=0; i<vector.length; i++) {
-			vector[i] = -1.0;
-		}
-		
-		for(int i=0; i<numStates; i++) {
-			int num = NUM_TO_MIN_NUMBER_MAPPING[i];
-			
-			if(num == i) {
-				int doubleIndex = mappingNumToIndex.get(num);
-				
-				if(num == 0) {
-					vector[doubleIndex] = 1.0;
-				} else {
-					vector[doubleIndex] = Math.pow(0.65, getNumGroups0(num, numBits));
-					System.out.println("Pre: " + num + " -> " + vector[doubleIndex]);
-				}
-			}
-		}
-		
-		for(int i=0; i<vector.length; i++) {
-			if(vector[i] < 0 ) {
-				System.out.println("DOH!");
-				System.exit(1);
-			}
-		}
-		
-		return vector;
-	}
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 20;
+		int NUM_BITS_TO_USE = 5;
 		int NUM_IT = 30;
 		
+		if(NUM_BITS_TO_USE % 2 != 0) {
+			System.out.println("ERROR: please use an even number of bits!");
+		}
 
 		int PERIOD_DEBUG_PER_LOOP = 1;
 		if(NUM_BITS_TO_USE < 15) {
@@ -201,7 +125,6 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 			
 		}
 		
-		vector = setupBestGuessEigenvectorCrude(numBits, countOrbits, mappingNumToIndex);
 		
 		//TODO: adjust vectors to even better guess so that the doesn't need as many iterations.
 		
@@ -220,9 +143,9 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 			}
 		}
 		
-		System.out.println("Final eigenvalue: " + curEigenvalue);
+		System.out.println("Final eigenvalue for triangle version: " + curEigenvalue);
 		
-		System.out.println("Estimated growth rate: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
+		System.out.println("Estimated growth rate for triangle version: " + Math.pow(curEigenvalue, 1.0/(1.0 * numBits)));
 		
 		System.out.println("Debug frequency:");
 		if(numBits <= 12) {
@@ -241,91 +164,69 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 		int LEFT_HAND_SIDE_CELL = (int)Math.pow(2, numBits - 1);
 		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
 		
+		int RIGHT_SIDE_UP_TRIANGLES = 0;
+		for(int i=0; i<numBits/2; i++) {
+			RIGHT_SIDE_UP_TRIANGLES = 4*RIGHT_SIDE_UP_TRIANGLES + 2;
+		}
+		
 		double newVector[] = new double[vector.length];
 		
 		for(int i=0; i<vector.length; i++) {
 
 			int belowLayer = mappingIndexToNum.get(i);
+			
+			//boolean checkAround = ((belowLayer & LEFT_HAND_SIDE_CELL) ^ ((belowLayer%2) << (numBits-1))) != 0;
+			
+			
+			int extendedBottom = belowLayer + belowLayer << numBits;
 
-			//TODO: Remove 1 more if condition and don't do special checkAround.
-			boolean checkAround = ((belowLayer & LEFT_HAND_SIDE_CELL) ^ ((belowLayer%2) << (numBits-1))) != 0;
+			int rightSideUpTrianglesForBottom = belowLayer & RIGHT_SIDE_UP_TRIANGLES;
+			int typeBit1ForBottom = (extendedBottom ^ (extendedBottom >> 1)) & rightSideUpTrianglesForBottom;
+			int typeBit2ForBottom = ((extendedBottom << 1) ^ (extendedBottom >> 1)) & rightSideUpTrianglesForBottom;
 			
-			int lhsToCheck = (belowLayer ^ (belowLayer << 1));
 			
-			if(checkAround) {
-				for(int j=0; j<Math.pow(2, numBits); ) {
+			for(int j=0; j<Math.pow(2, numBits); ) {
+				
+				int tmpCheckProb = 0;
+				
+				//TODO: AHH!
+				
+				
+				
+				if( tmpCheckProb != 0) {
+					//Collision:
 					
-					int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
-					if( tmpCheckProb != 0) {
-						//Collision:
-						
-						/* From random thread poster called VArtem: (codeforces)
-						 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
-	
-						public static int highestOneBit(int i) {
-						    i |= (i >>  1);
-						    i |= (i >>  2);
-						    i |= (i >>  4);
-						    i |= (i >>  8);
-						    i |= (i >> 16);
-						    return i - (i >>> 1);
-						}
-						*/
-						//find the index to the right of the leftmost bit:
-						int getHighestBit = tmpCheckProb >> 1;
-						//Copied algo that's O(log(size)) instead of just O(size):
-						getHighestBit |= (getHighestBit >>  1);
-						getHighestBit |= (getHighestBit >>  2);
-						getHighestBit |= (getHighestBit >>  4);
-						getHighestBit |= (getHighestBit >>  8);
-						getHighestBit |= (getHighestBit >> 16);
-						
-						int answer = getHighestBit - (getHighestBit >>> 1);
-					    j += answer;
-					    
-						continue;
+					/* From random thread poster called VArtem: (codeforces)
+					 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
+
+					public static int highestOneBit(int i) {
+					    i |= (i >>  1);
+					    i |= (i >>  2);
+					    i |= (i >>  4);
+					    i |= (i >>  8);
+					    i |= (i >> 16);
+					    return i - (i >>> 1);
 					}
+					*/
+					//find the index to the right of the leftmost bit:
+					int getHighestBit = tmpCheckProb >> 1;
+					//Copied algo that's O(log(size)) instead of just O(size):
+					getHighestBit |= (getHighestBit >>  1);
+					getHighestBit |= (getHighestBit >>  2);
+					getHighestBit |= (getHighestBit >>  4);
+					getHighestBit |= (getHighestBit >>  8);
+					getHighestBit |= (getHighestBit >> 16);
 					
-					boolean checkAroundJ = ((j & LEFT_HAND_SIDE_CELL) ^ ((j%2) << (numBits-1))) != 0;
-					
-					if(checkAroundJ && (j + belowLayer) % 2 == 1) {
-						//Collision when wrapping around:
-						j++;
-						continue;
-					}
-					
-					//No Collision:
-					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
-					j++;
-					
+					int answer = getHighestBit - (getHighestBit >>> 1);
+				    j += answer;
+				    
+					continue;
 				}
-			} else {
-				//Copy-paste code in the hopes of getting an efficiency gain:
-				for(int j=0; j<Math.pow(2, numBits); ) {
-					
-					int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
-					if( tmpCheckProb != 0) {
-						//Collision!
-						
-						int getHighestBit = tmpCheckProb >> 1;
-						getHighestBit |= (getHighestBit >>  1);
-						getHighestBit |= (getHighestBit >>  2);
-						getHighestBit |= (getHighestBit >>  4);
-						getHighestBit |= (getHighestBit >>  8);
-						getHighestBit |= (getHighestBit >> 16);
-						
-						int answer = getHighestBit - (getHighestBit >>> 1);
-						
-					    j += answer;
-						continue;
-					}
-					
-					//No Collision:
-					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
-					j++;
-					
-				}
-				//END Copy-paste code in the hopes of getting an efficiency gain:
+				
+				//No Collision:
+				newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
+				j++;
+				
 			}
 			
 		}

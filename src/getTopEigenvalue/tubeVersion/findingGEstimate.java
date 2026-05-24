@@ -27,7 +27,9 @@ public class findingGEstimate {
 			1.8003313258745517,
 			1.8003313250318118,
 			1.8003313247016295,
-			1.8003313245717636};
+			1.8003313245717636,
+			1.8003313245205081
+		};
 		
 		//old:   1.8003313244887489
 		//vs new 1.8003313244880341
@@ -40,15 +42,23 @@ public class findingGEstimate {
 				
 			}
 		}
+		
+		double lastRatio = 1.0;
+		double lastDiffRatio = 1.0;
+		
+		
 		System.out.println();
 		for(int i=0; i<diffs.length; i++) {
 			if(i > 0) {
 				double ratio = diffs[i] / diffs[i-1];
 				System.out.println("Ratio: " + ratio);
 				
+				lastRatio = ratio;
 				if(i > 1) {
+					lastDiffRatio = ((diffs[i] / diffs[i-1]) - (diffs[i-1] / diffs[i-2]));
 					System.out.println("Diff ratio: " + ((diffs[i] / diffs[i-1]) - (diffs[i-1] / diffs[i-2])));
 				}
+				
 			}
 		}
 		
@@ -60,7 +70,8 @@ public class findingGEstimate {
 		//1.8003313244878543
 		//Extrapolate ration 0.392:
 		//1.8003313244887489
-		double RATIO = 0.392;
+		double RATIO = lastRatio + (12.0/13.0)*lastDiffRatio;
+		System.out.println("RATIO: " + RATIO);
 		
 		double firstDiff = diffs[diffs.length - 1];
 		double firstEstimate = numbers[numbers.length - 1];
