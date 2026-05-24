@@ -187,6 +187,12 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 			
 			for(int j=0; j<Math.pow(2, numBits); ) {
 				
+				int extendedTop = j + j << numBits;
+
+				int rightSideUpTrianglesForTop = j & RIGHT_SIDE_UP_TRIANGLES;
+				int typeBit1ForTop = (extendedTop ^ (extendedTop >> 1)) & rightSideUpTrianglesForBottom;
+				int typeBit2ForTop = ((extendedTop << 1) ^ (extendedTop >> 1)) & rightSideUpTrianglesForBottom;
+				
 				int tmpCheckProb = 0;
 				
 				//TODO: AHH!
