@@ -36,7 +36,7 @@ Explain how approx with cylinder.
 
 Show best guess.
 
-Explain Naive approach
+Explain Naive approach that gets 1.8
 
 Show algo to estimate eigenvector and how it's related to naive approach.
 (Or just explain rules of thumb?)
@@ -50,6 +50,10 @@ suggest # states simple-phase net is equal to # states * catalan numbers
 
 Separately, estimate the 1.74455 ish number for simple-phase nets using the conjecture.
  
+ TODO:
+ Actually try to find that self-avoiding walk numbers and confirm with other papers.
+ TODO:
+ make a separate counting version of the mult avoiding cycles with cyclinder as a sanity check. 
 
 Conclusion:
 
