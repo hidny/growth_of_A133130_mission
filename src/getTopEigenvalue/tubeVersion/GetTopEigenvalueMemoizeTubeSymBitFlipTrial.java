@@ -129,7 +129,7 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 20;
+		int NUM_BITS_TO_USE = 19;
 		int NUM_IT = 30;
 		
 
@@ -238,95 +238,70 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 	
 	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
 		
-		int LEFT_HAND_SIDE_CELL = (int)Math.pow(2, numBits - 1);
 		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
+		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
 		
 		double newVector[] = new double[vector.length];
 		
 		for(int i=0; i<vector.length; i++) {
 
 			int belowLayer = mappingIndexToNum.get(i);
+			int wrappedBottom =  (belowLayer << numBits) + belowLayer;
+			
+			int rhsToCheck = ((wrappedBottom >> 1) ^ wrappedBottom) & RELEVANT_TILES;
+			
+			for(int j=0; j<Math.pow(2, numBits); ) {
+				
+				int wrappedTop = ((j << numBits) + j);
+				
+				int tmpCheckProb = (wrappedBottom ^ wrappedTop) & (~(wrappedBottom ^ (wrappedTop >> 1))) & rhsToCheck;
+				
+				if( tmpCheckProb != 0) {
+					//Collision:
+					
+					/* From random thread poster called VArtem: (codeforces)
+					 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
 
-			//TODO: Remove 1 more if condition and don't do special checkAround.
-			boolean checkAround = ((belowLayer & LEFT_HAND_SIDE_CELL) ^ ((belowLayer%2) << (numBits-1))) != 0;
-			
-			int lhsToCheck = (belowLayer ^ (belowLayer << 1));
-			
-			if(checkAround) {
-				for(int j=0; j<Math.pow(2, numBits); ) {
-					
-					int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
-					if( tmpCheckProb != 0) {
-						//Collision:
-						
-						/* From random thread poster called VArtem: (codeforces)
-						 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
-	
-						public static int highestOneBit(int i) {
-						    i |= (i >>  1);
-						    i |= (i >>  2);
-						    i |= (i >>  4);
-						    i |= (i >>  8);
-						    i |= (i >> 16);
-						    return i - (i >>> 1);
-						}
-						*/
-						//find the index to the right of the leftmost bit:
-						int getHighestBit = tmpCheckProb >> 1;
-						//Copied algo that's O(log(size)) instead of just O(size):
-						getHighestBit |= (getHighestBit >>  1);
-						getHighestBit |= (getHighestBit >>  2);
-						getHighestBit |= (getHighestBit >>  4);
-						getHighestBit |= (getHighestBit >>  8);
-						getHighestBit |= (getHighestBit >> 16);
-						
-						int answer = getHighestBit - (getHighestBit >>> 1);
-					    j += answer;
-					    
-						continue;
+					public static int highestOneBit(int i) {
+					    i |= (i >>  1);
+					    i |= (i >>  2);
+					    i |= (i >>  4);
+					    i |= (i >>  8);
+					    i |= (i >> 16);
+					    return i - (i >>> 1);
 					}
+					*/
+					//find the index of the leftmost bit:
+					int getHighestBit = tmpCheckProb;
+					//Copied algo that's O(log(size)) instead of just O(size):
+					getHighestBit |= (getHighestBit >>  1);
+					getHighestBit |= (getHighestBit >>  2);
+					getHighestBit |= (getHighestBit >>  4);
+					getHighestBit |= (getHighestBit >>  8);
+					getHighestBit |= (getHighestBit >> 16);
 					
-					boolean checkAroundJ = ((j & LEFT_HAND_SIDE_CELL) ^ ((j%2) << (numBits-1))) != 0;
 					
-					if(checkAroundJ && (j + belowLayer) % 2 == 1) {
-						//Collision when wrapping around:
-						j++;
-						continue;
-					}
+					int answer = getHighestBit - (getHighestBit >>> 1);
 					
+					//The two variables below are made to get rid of one if condition about how to handle case
+					//where the leftmost bit interferes with rightmost tile.
+					int answerisLeftMostTile = (answer >> (numBits-1)) & 1;
+					int answerNotLeftMost = answer & RELEVANT_TILES_NOT_LEFTMOST;
+					
+					
+				    j += answerisLeftMostTile + answerNotLeftMost;
+
+				} else {
+
 					//No Collision:
 					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
 					j++;
-					
 				}
-			} else {
-				//Copy-paste code in the hopes of getting an efficiency gain:
-				for(int j=0; j<Math.pow(2, numBits); ) {
-					
-					int tmpCheckProb = lhsToCheck & (belowLayer ^ j) & (~(belowLayer ^ (j << 1))) & RELEVANT_TILES;
-					if( tmpCheckProb != 0) {
-						//Collision!
-						
-						int getHighestBit = tmpCheckProb >> 1;
-						getHighestBit |= (getHighestBit >>  1);
-						getHighestBit |= (getHighestBit >>  2);
-						getHighestBit |= (getHighestBit >>  4);
-						getHighestBit |= (getHighestBit >>  8);
-						getHighestBit |= (getHighestBit >> 16);
-						
-						int answer = getHighestBit - (getHighestBit >>> 1);
-						
-					    j += answer;
-						continue;
-					}
-					
-					//No Collision:
-					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
-					j++;
-					
-				}
-				//END Copy-paste code in the hopes of getting an efficiency gain:
+				
+				
+				
 			}
+			
 			
 		}
 				
