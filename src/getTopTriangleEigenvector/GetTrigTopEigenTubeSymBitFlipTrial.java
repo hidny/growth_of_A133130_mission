@@ -8,7 +8,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static int rotateRight(int n, int numBits) {
 		
-		return n >> 2+ (n << (numBits-2)) & MASK_FOR_COMPLIMENT;
+		return (n >> 2) + ((n << (numBits-2)) & MASK_FOR_COMPLIMENT);
 		
 	}
 	
@@ -50,7 +50,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 6;
+		int NUM_BITS_TO_USE = 4;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -159,15 +159,74 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	}
 
 	
-	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
+	public static int checkProb(int topLeftValues, int topMidValues, int topRightValues, int bottomRightValues, int bottomMidValues, int bottomLeftValues) {
+		int tmpCheckProb = 0;
 		
-		int LEFT_HAND_SIDE_CELL = (int)Math.pow(2, numBits - 1);
-		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
 		
-		int RIGHT_SIDE_UP_TRIANGLES = 0;
-		for(int i=0; i<numBits/2; i++) {
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		//System.out.println("2nd last: " + tmpCheckProb);
+		//System.out.println("2nd last 2: " + tmpCheckProb);
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+
+		//System.out.println("Last: " + tmpCheckProb);
+		tmpCheckProb = (~tmpCheckProb);
+
+		//System.out.println("Ret: " + tmpCheckProb);
+		
+		return tmpCheckProb & RIGHT_SIDE_UP_TRIANGLES;
+	}
+
+	public static int RIGHT_SIDE_UP_TRIANGLES = 0;
+	static {
+		RIGHT_SIDE_UP_TRIANGLES = 0;
+		for(int i=0; i<14; i++) {
 			RIGHT_SIDE_UP_TRIANGLES = 4*RIGHT_SIDE_UP_TRIANGLES + 2;
 		}
+		
+	}
+	
+	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
+		
+		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
+		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
+		
+		
 		
 		double newVector[] = new double[vector.length];
 		
@@ -175,26 +234,29 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 
 			int belowLayer = mappingIndexToNum.get(i);
 			
-			int extendedBottom = belowLayer + belowLayer << numBits;
+			int extendedBottom = belowLayer + (belowLayer << numBits);
 
-			int rightSideUpTrianglesForBottom = belowLayer & RIGHT_SIDE_UP_TRIANGLES;
-			int typeBit1ForBottom = (extendedBottom ^ (extendedBottom >> 1)) & rightSideUpTrianglesForBottom;
-			int typeBit2ForBottom = ((extendedBottom << 1) ^ (extendedBottom >> 1)) & rightSideUpTrianglesForBottom;
+			int bottomLeftValues = (extendedBottom >> 1) & RIGHT_SIDE_UP_TRIANGLES;
+			int bottomMidValues = extendedBottom & RIGHT_SIDE_UP_TRIANGLES;
+			int bottomRightValues = (extendedBottom << 1) & RIGHT_SIDE_UP_TRIANGLES;
+			
+			
 			
 			
 			for(int j=0; j<Math.pow(2, numBits); ) {
 				
-				int extendedTop = j + j << numBits;
+				int extendedTop = j + (j << numBits);
 
-				int rightSideUpTrianglesForTop = j & RIGHT_SIDE_UP_TRIANGLES;
-				int typeBit1ForTop = (extendedTop ^ (extendedTop >> 1)) & rightSideUpTrianglesForBottom;
-				int typeBit2ForTop = ((extendedTop << 1) ^ (extendedTop >> 1)) & rightSideUpTrianglesForBottom;
-				
-				int tmpCheckProb = 0;
 				
 				//TODO: AHH!
+
+				int topLeftValues = (extendedTop >> 2) & RIGHT_SIDE_UP_TRIANGLES;
+				int topMidValues = (extendedTop >> 1) & RIGHT_SIDE_UP_TRIANGLES;
+				int topRightValues = extendedTop & RIGHT_SIDE_UP_TRIANGLES;
 				
+				//1st idea: over all 32 combos:
 				
+				int tmpCheckProb = checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
 				
 				if( tmpCheckProb != 0) {
 					//Collision:
@@ -212,7 +274,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 					}
 					*/
 					//find the index to the right of the leftmost bit:
-					int getHighestBit = tmpCheckProb >> 1;
+					int getHighestBit = tmpCheckProb & RELEVANT_TILES;
 					//Copied algo that's O(log(size)) instead of just O(size):
 					getHighestBit |= (getHighestBit >>  1);
 					getHighestBit |= (getHighestBit >>  2);
@@ -220,9 +282,40 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 					getHighestBit |= (getHighestBit >>  8);
 					getHighestBit |= (getHighestBit >> 16);
 					
+					//Estimated growth rate for triangle version: 1.6028038616652438
+					
 					int answer = getHighestBit - (getHighestBit >>> 1);
-				    j += answer;
-				    
+					
+					//The two variables below are made to get rid of one if condition about how to handle case
+					//where the leftmost bit interferes with rightmost tile.
+					
+					int answerisLeftMostTile = (answer >> (numBits-1)) & 1;
+					int answerNotLeftMost = answer & RELEVANT_TILES_NOT_LEFTMOST;
+					
+					if(answerisLeftMostTile + answerNotLeftMost == 0) {
+						System.out.println(tmpCheckProb);
+					}
+					if(!(answerNotLeftMost > 0 ^ answerisLeftMostTile > 0)) {
+						System.out.println("Doh!: " + tmpCheckProb);
+						System.out.println("Doh!: " + answerNotLeftMost);
+						System.out.println("Doh!: " + answerisLeftMostTile);
+						System.exit(1);
+					}
+					
+					if(answerisLeftMostTile > 1) {
+						System.out.println("Ah!");
+						System.out.println("Doh!: " + answerisLeftMostTile);
+						System.exit(1);
+					}
+					
+				    //j += answerisLeftMostTile + answerNotLeftMost;
+				    //Final eigenvalue for triangle version: 102.46431722289462
+				    //Estimated growth rate for triangle version: 1.5887562244326803
+					
+					j++;
+				    //Final eigenvalue for triangle version: 106.5817459006501
+					//Estimated growth rate for triangle version: 1.5950278960753408
+				
 				} else {
 				
 					//No Collision:
