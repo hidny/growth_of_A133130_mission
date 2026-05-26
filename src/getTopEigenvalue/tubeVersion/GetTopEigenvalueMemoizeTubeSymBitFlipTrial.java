@@ -129,7 +129,7 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 19;
+		int NUM_BITS_TO_USE = 22;
 		int NUM_IT = 30;
 		
 
@@ -379,3 +379,13 @@ public class GetTopEigenvalueMemoizeTubeSymBitFlipTrial {
 //Debug 2nd one because it's tending to something as numbits increase!
 //1 -> 0.6523519467006657
 
+
+
+/*
+ * N=22 after 15 hours:
+Final eigenvalue: 414718.71645765746
+Estimated growth rate: 1.8003313245717636
+Debug frequency:
+Debug 2nd one because it's tending to something as numbits increase!
+1 -> 0.6523519467176729
+*/

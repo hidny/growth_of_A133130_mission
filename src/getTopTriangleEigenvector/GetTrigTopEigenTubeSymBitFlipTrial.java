@@ -50,7 +50,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 5;
+		int NUM_BITS_TO_USE = 6;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -175,9 +175,6 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 
 			int belowLayer = mappingIndexToNum.get(i);
 			
-			//boolean checkAround = ((belowLayer & LEFT_HAND_SIDE_CELL) ^ ((belowLayer%2) << (numBits-1))) != 0;
-			
-			
 			int extendedBottom = belowLayer + belowLayer << numBits;
 
 			int rightSideUpTrianglesForBottom = belowLayer & RIGHT_SIDE_UP_TRIANGLES;
@@ -226,12 +223,12 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 					int answer = getHighestBit - (getHighestBit >>> 1);
 				    j += answer;
 				    
-					continue;
-				}
+				} else {
 				
-				//No Collision:
-				newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
-				j++;
+					//No Collision:
+					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
+					j++;
+				}
 				
 			}
 			
@@ -283,31 +280,4 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		return ret;
 		
 	}
-
 }
-
-//Current eigenvalue: 746631.0965408729
-//Current eigenvalue: 746631.095764318
-//Current eigenvalue: 746631.0956592667
-//Current eigenvalue: 746631.0956397048
-//Current eigenvalue: 746631.0956366488
-//Current eigenvalue: 746631.0956360548
-//Current eigenvalue: 746631.0956360536
-//Current eigenvalue: 746631.0956360042
-//Current eigenvalue: 746631.0956360202
-//Current eigenvalue: 746631.0956360163
-//Current eigenvalue: 746631.0956360153
-//Current eigenvalue: 746631.0956360153
-//Current eigenvalue: 746631.0956360151
-//Current eigenvalue: 746631.0956360151
-//Current eigenvalue: 746631.0956360151
-//Current eigenvalue: 746631.0956360151
-//Current eigenvalue: 746631.0956360151
-//estimate:           1.800331324520508
-
-//Final eigenvalue: 746631.0956360151
-//Estimated growth rate: 1.8003313245205081
-//Debug frequency:
-//Debug 2nd one because it's tending to something as numbits increase!
-//1 -> 0.6523519467006657
-
