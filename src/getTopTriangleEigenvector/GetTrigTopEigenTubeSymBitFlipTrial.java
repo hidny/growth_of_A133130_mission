@@ -50,7 +50,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 4;
+		int NUM_BITS_TO_USE = 24;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -241,7 +241,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 			int bottomRightValues = (extendedBottom << 1) & RIGHT_SIDE_UP_TRIANGLES;
 			
 			
-			
+			int debugJSkip = 0;
 			
 			for(int j=0; j<Math.pow(2, numBits); ) {
 				
@@ -290,7 +290,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 					//where the leftmost bit interferes with rightmost tile.
 					
 					int answerisLeftMostTile = (answer >> (numBits-1)) & 1;
-					int answerNotLeftMost = answer & RELEVANT_TILES_NOT_LEFTMOST;
+					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 1;
 					
 					if(answerisLeftMostTile + answerNotLeftMost == 0) {
 						System.out.println(tmpCheckProb);
@@ -307,20 +307,40 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 						System.out.println("Doh!: " + answerisLeftMostTile);
 						System.exit(1);
 					}
+					//System.out.println("answerisLeftMostTile: " + answerisLeftMostTile);
+					//System.out.println("answerNotLeftMost: " + answerNotLeftMost);
+					//System.out.println(belowLayer + " and " + j + " collision. Add " + (answerisLeftMostTile + answerNotLeftMost));
 					
-				    //j += answerisLeftMostTile + answerNotLeftMost;
-				    //Final eigenvalue for triangle version: 102.46431722289462
-				    //Estimated growth rate for triangle version: 1.5887562244326803
+					if(debugJSkip <= j) {
+						debugJSkip = j + answerisLeftMostTile + answerNotLeftMost;
+					}
+				    j += answerisLeftMostTile + answerNotLeftMost;
+
+				    
+				    
+				    //Final eigenvalue for triangle version: 106.5817459006501
+				    //Estimated growth rate for triangle version: 1.5950278960753408
+				    //Final eigenvalue for triangle version: 6.458813769776312
+				    //Estimated growth rate for triangle version: 1.5941830624788615
 					
-					j++;
+					//j++;
+
+				    //Final eigenvalue for triangle version: 6.458813769776312
+				    //Estimated growth rate for triangle version: 1.5941830624788615
 				    //Final eigenvalue for triangle version: 106.5817459006501
 					//Estimated growth rate for triangle version: 1.5950278960753408
-				
+					
+					
 				} else {
-				
+					//System.out.println(belowLayer + " and " + j + " no collision");
+					if(j < debugJSkip) {
+						System.out.println("DOH debug J skip!");
+						System.exit(1);
+					}
 					//No Collision:
 					newVector[i] += vector[mappingNumToIndex.get(NUM_TO_MIN_NUMBER_MAPPING[j])];
 					j++;
+					
 				}
 				
 			}
@@ -374,3 +394,24 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		
 	}
 }
+
+//Shot in the dark:
+//(2^(1/3) e^(2/3) log^(5/6)(2))/(log^(4/3)(3)) approx 1.595027838271
+//or:
+//root of 4 x^4 - 41 x^3 + 51 x^2 + 13 x - 10 near x = 1.59503 approx 1.595027839819
+
+//N=20
+//Final eigenvalue for triangle version: 11359.661278052241
+//Estimated growth rate for triangle version: 1.5950278449572721
+
+//N=18:
+//Final eigenvalue for triangle version: 4465.075619053574
+//Estimated growth rate for triangle version: 1.5950278398038673
+
+//N=16:
+//Final eigenvalue for triangle version: 1755.0624537400415
+//Estimated growth rate for triangle version: 1.59502790692782
+
+//N = 14:
+//Final eigenvalue for triangle version: 689.8540504307512
+//Estimated growth rate for triangle version: 1.595028225687307
