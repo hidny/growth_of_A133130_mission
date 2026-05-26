@@ -50,7 +50,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 24;
+		int NUM_BITS_TO_USE = 16;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -400,6 +400,10 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 //or:
 //root of 4 x^4 - 41 x^3 + 51 x^2 + 13 x - 10 near x = 1.59503 approx 1.595027839819
 
+//N=22
+//Final eigenvalue for triangle version: 28900.271663531104
+//Estimated growth rate for triangle version: 1.5950278458233007
+
 //N=20
 //Final eigenvalue for triangle version: 11359.661278052241
 //Estimated growth rate for triangle version: 1.5950278449572721
@@ -415,3 +419,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 //N = 14:
 //Final eigenvalue for triangle version: 689.8540504307512
 //Estimated growth rate for triangle version: 1.595028225687307
+
+
+//Debug 2nd one because it's tending to something as numbits increase!
+//1 -> 0.5122395166311167
