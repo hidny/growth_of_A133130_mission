@@ -392,10 +392,14 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	}
 }
 
-//Shot in the dark:
+//Shot in the dark that are not correct:
 //(2^(1/3) e^(2/3) log^(5/6)(2))/(log^(4/3)(3)) approx 1.595027838271
 //or:
 //root of 4 x^4 - 41 x^3 + 51 x^2 + 13 x - 10 near x = 1.59503 approx 1.595027839819
+
+//N=24:
+//Final eigenvalue for triangle version: 73525.58048237748
+//Estimated growth rate for triangle version: 1.5950278455365183
 
 //N=22
 //Final eigenvalue for triangle version: 28900.271663531104
@@ -428,3 +432,12 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 //Current eigenvalue: 73525.58048237412
 //Current eigenvalue: 73525.58048237495
 //Current eigenvalue: 73525.58048237521
+//Current eigenvalue: 73525.58048237753
+//Current eigenvalue: 73525.58048237702
+//Current eigenvalue: 73525.58048237542
+//Current eigenvalue: 73525.58048237761
+//Current eigenvalue: 73525.58048237748
+//Current eigenvalue: 73525.58048237543
+
+//Current eigenvalue: 73525.58048237761
+//
