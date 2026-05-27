@@ -6,7 +6,12 @@ public class DrawTheTrigMatrix {
 	
 	public static void main(String args[]) {
 	
-		int NUM_BITS = 6;
+		
+		int NUM_BITS = 8;
+		
+		if(args.length >= 1) {
+			NUM_BITS = Integer.parseInt(args[0]);
+		}
 		
 		if(NUM_BITS % 2 != 0) {
 			System.out.println("ERROR: NUM_BITS must be set as an even number");
@@ -24,7 +29,7 @@ public class DrawTheTrigMatrix {
 				boolean bitsJ[] = convertToBool(j, NUM_BITS);
 				
 				boolean foundProb = false;
-				for(int k=0; k<bitsI.length; k++) {
+				for(int k=0; k<bitsI.length; k+=2) {
 					int topLeftValues = 0;
 					int topMidValues = 0;
 					int topRightValues = 0;
@@ -83,6 +88,12 @@ public class DrawTheTrigMatrix {
 		}
 		System.out.println();
 		System.out.println();
+		
+		System.out.println("Vs");
+		
+		if(args.length == 0) {
+			DrawTheTrigMatrix2.main(new String[] {(NUM_BITS + "")});
+		}
 	}
 	
 	public static boolean checkProbSlow(int topLeftValues, int topMidValues, int topRightValues, int bottomRightValues, int bottomMidValues, int bottomLeftValues) {
