@@ -6,7 +6,7 @@ public class DrawTheTrigMatrix2 {
 	
 	public static void main(String args[]) {
 	
-		int NUM_BITS = 4;
+		int NUM_BITS = 6;
 		
 		if(NUM_BITS % 2 != 0) {
 			System.out.println("ERROR: NUM_BITS must be set as an even number");
@@ -55,6 +55,12 @@ public class DrawTheTrigMatrix2 {
 					}
 					
 					int tmpCheckProb = GetTrigTopEigenTubeSymBitFlipTrial.checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+					
+					boolean probSlow = DrawTheTrigMatrix.checkProbSlow(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+					if(probSlow ^ tmpCheckProb!=0) {
+						System.out.println("PROBLEM CHECKER IS BROKEN!");
+						System.exit(1);
+					}
 					
 					if(tmpCheckProb != 0) {
 						foundProb = true;

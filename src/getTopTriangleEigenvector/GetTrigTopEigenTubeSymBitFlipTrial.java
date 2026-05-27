@@ -221,6 +221,9 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		
 	}
 	
+	//TODO: BUG: I reversed top and bottom!
+	//TOOD: does that make a diff?
+	
 	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
 		
 		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;

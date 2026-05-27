@@ -2,6 +2,8 @@ package getTopTriangleEigenvector;
 
 public class DrawTheTrigMatrix {
 
+	public static final int NUMBER_THAT_GETS_CHECKED = 2;
+	
 	public static void main(String args[]) {
 	
 		int NUM_BITS = 6;
@@ -11,7 +13,6 @@ public class DrawTheTrigMatrix {
 			System.exit(1);
 		}
 		
-		int NUMBER_THAT_GETS_CHECKED = 2;
 		
 		for(int i=0; i<Math.pow(2, NUM_BITS); i++) {
 			
@@ -54,6 +55,12 @@ public class DrawTheTrigMatrix {
 					
 					int tmpCheckProb = GetTrigTopEigenTubeSymBitFlipTrial.checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
 					
+					boolean probSlow = checkProbSlow(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+					if(probSlow ^ tmpCheckProb!=0) {
+						System.out.println("PROBLEM CHECKER IS BROKEN!");
+						System.exit(1);
+					}
+					
 					if(tmpCheckProb != 0) {
 						foundProb = true;
 						break;
@@ -76,6 +83,27 @@ public class DrawTheTrigMatrix {
 		}
 		System.out.println();
 		System.out.println();
+	}
+	
+	public static boolean checkProbSlow(int topLeftValues, int topMidValues, int topRightValues, int bottomRightValues, int bottomMidValues, int bottomLeftValues) {
+		
+		boolean array[] = new boolean[6];
+		array[0] = topLeftValues == NUMBER_THAT_GETS_CHECKED;
+		array[1] = topMidValues == NUMBER_THAT_GETS_CHECKED;
+		array[2] = topRightValues == NUMBER_THAT_GETS_CHECKED;
+		array[3] = bottomRightValues == NUMBER_THAT_GETS_CHECKED;
+		array[4] = bottomMidValues == NUMBER_THAT_GETS_CHECKED;
+		array[5] = bottomLeftValues == NUMBER_THAT_GETS_CHECKED;
+		
+		int numSwitches = 0;
+		
+		for(int i=1; i<6; i++) {
+			if(array[i] != array[i-1]) {
+				numSwitches++;
+			}
+		}
+		
+		return numSwitches > 2;
 	}
 	
 	public static int getIndex(boolean table[], int index) {
