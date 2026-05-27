@@ -226,8 +226,6 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
 		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
 		
-		
-		
 		double newVector[] = new double[vector.length];
 		
 		for(int i=0; i<vector.length; i++) {
@@ -246,10 +244,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 			for(int j=0; j<Math.pow(2, numBits); ) {
 				
 				int extendedTop = j + (j << numBits);
-
-				
-				//TODO: AHH!
-
+		
 				int topLeftValues = (extendedTop >> 2) & RIGHT_SIDE_UP_TRIANGLES;
 				int topMidValues = (extendedTop >> 1) & RIGHT_SIDE_UP_TRIANGLES;
 				int topRightValues = extendedTop & RIGHT_SIDE_UP_TRIANGLES;
@@ -328,8 +323,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 				    //Final eigenvalue for triangle version: 6.458813769776312
 				    //Estimated growth rate for triangle version: 1.5941830624788615
 				    //Final eigenvalue for triangle version: 106.5817459006501
-					//Estimated growth rate for triangle version: 1.5950278960753408
-					
+					//Estimated growth rate for triangle version: 1.5950278960753408					
 					
 				} else {
 					//System.out.println(belowLayer + " and " + j + " no collision");
@@ -423,3 +417,11 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 
 //Debug 2nd one because it's tending to something as numbits increase!
 //1 -> 0.5122395166311167
+
+//N=24:
+
+//Current eigenvalue: 73525.58048211866
+//Current eigenvalue: 73525.58048238617
+//Current eigenvalue: 73525.58048237412
+//Current eigenvalue: 73525.58048237495
+//Current eigenvalue: 73525.58048237521
