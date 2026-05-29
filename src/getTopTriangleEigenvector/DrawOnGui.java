@@ -65,6 +65,71 @@ public class DrawOnGui implements ActionListener {
 		
 	}
 	
+
+	public static boolean[][] getTableSquareLattice(int numBits) { 
+		
+		int length = (int)Math.pow(2, numBits);
+
+		int RELEVANT_TILES = (int)Math.pow(2, numBits - 1) - 1;
+		
+		boolean ret[][] = new boolean[length][length];
+		
+		for(int i=0; i<ret.length; i++) {
+
+			int rhsToCheck = ((i >> 1) ^ i) & RELEVANT_TILES;
+			
+			for(int j=0; j<Math.pow(2, numBits); ) {
+				
+				
+				int tmpCheckProb = (i ^ j) & (~(i ^ (j >> 1))) & rhsToCheck;
+				
+				if( tmpCheckProb != 0) {
+					//Collision:
+					
+					/* From random thread poster called VArtem: (codeforces)
+					 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
+
+					public static int highestOneBit(int i) {
+					    i |= (i >>  1);
+					    i |= (i >>  2);
+					    i |= (i >>  4);
+					    i |= (i >>  8);
+					    i |= (i >> 16);
+					    return i - (i >>> 1);
+					}
+					*/
+					//find the index of the leftmost bit:
+					int getHighestBit = tmpCheckProb;
+					//Copied algo that's O(log(size)) instead of just O(size):
+					getHighestBit |= (getHighestBit >>  1);
+					getHighestBit |= (getHighestBit >>  2);
+					getHighestBit |= (getHighestBit >>  4);
+					getHighestBit |= (getHighestBit >>  8);
+					getHighestBit |= (getHighestBit >> 16);
+					
+					
+					int answer = getHighestBit - (getHighestBit >>> 1);
+					
+					
+					
+				    j += answer;
+
+				} else {
+
+					//No Collision:
+					ret[i][j] = true;
+					j++;
+				}
+				
+				
+				
+			}
+			
+		}
+		
+		return ret;
+	}
+	
 	public static boolean[][] getTableTubeSquareLattice(int numBits) { 
 		
 		int length = (int)Math.pow(2, numBits);
@@ -158,7 +223,8 @@ public class DrawOnGui implements ActionListener {
 				DIV_BETWEEN_SQUARES = 0;
 			}
 			
-			boolean ret[][] = getTableTubeSquareLattice(N);
+			//boolean ret[][] = getTableTubeSquareLattice(N);
+			boolean ret[][] = getTableSquareLattice(N);
 			
 			for(int i=0; i<numDivs; i++) {
 				for(int j=0; j<numDivs; j++) {
