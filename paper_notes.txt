@@ -12,3 +12,17 @@ Brain also say that the diamond shape may have a different growth rate. I don't 
 have all but one 1 in a whole row vs having all 0s for a row:
 0.6523530799300028
 
+-------------------------------
+
+TODOs:
+
+Make GUI for trig matrix
+
+Make GUI for building random trig lattice with equilateral trig and then semi-square trigs
+
+Make GUI for building random square lattice
+
+Publish the formula for #1s in square matrix as N->inf
+Publish the formala for #1s in trig matrix as N->inf
+
+Work on self-avoiding walks across a square!
