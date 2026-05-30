@@ -65,6 +65,8 @@ public class DrawOnGui implements ActionListener {
 		
 	}
 	
+	//TODO: make slow version of these table creation algos, so you can sanity check them.
+	
 
 	public static boolean[][] getTableSquareLattice(int numBits) { 
 		
@@ -202,6 +204,283 @@ public class DrawOnGui implements ActionListener {
 		return ret;
 	}
 	
+	public static int RIGHT_SIDE_UP_TRIANGLES = 0;
+	static {
+		RIGHT_SIDE_UP_TRIANGLES = 0;
+		for(int i=0; i<14; i++) {
+			RIGHT_SIDE_UP_TRIANGLES = 4*RIGHT_SIDE_UP_TRIANGLES + 2;
+		}
+		
+	}
+	
+	public static int checkTriangleProb(int topLeftValues, int topMidValues, int topRightValues, int bottomRightValues, int bottomMidValues, int bottomLeftValues) {
+		int tmpCheckProb = 0;
+		
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & bottomLeftValues;
+		tmpCheckProb |= topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & bottomMidValues & ~bottomLeftValues;
+		
+		//System.out.println("2nd last: " + tmpCheckProb);
+		//System.out.println("2nd last 2: " + tmpCheckProb);
+		tmpCheckProb |= ~topLeftValues & ~topMidValues &  ~topRightValues &  ~bottomRightValues & ~bottomMidValues & ~bottomLeftValues;
+
+		//System.out.println("Last: " + tmpCheckProb);
+		tmpCheckProb = (~tmpCheckProb);
+
+		//System.out.println("Ret: " + tmpCheckProb);
+		
+		return tmpCheckProb & RIGHT_SIDE_UP_TRIANGLES;
+	}
+	
+
+	public static boolean[][] getTableTriangleLattice(int numBits) { 
+		
+		int length = (int)Math.pow(2, numBits);
+
+		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
+		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
+		
+		boolean ret[][] = new boolean[length][length];
+		
+		for(int i=0; i<ret.length; i++) {
+
+			int extendedTop = (i << numBits) + i;
+			
+			int topLeftValues = (extendedTop >> 2) & RIGHT_SIDE_UP_TRIANGLES;
+			int topMidValues = (extendedTop >> 1) & RIGHT_SIDE_UP_TRIANGLES;
+			int topRightValues = extendedTop & RIGHT_SIDE_UP_TRIANGLES;
+
+			int debugJSkip = 0;
+			
+			for(int j=0; j<Math.pow(2, numBits); ) {
+				
+				int extendedBottom = j + (j << numBits);
+
+				int bottomLeftValues = (extendedBottom >> 1) & RIGHT_SIDE_UP_TRIANGLES;
+				int bottomMidValues = extendedBottom & RIGHT_SIDE_UP_TRIANGLES;
+				int bottomRightValues = (extendedBottom << 1) & RIGHT_SIDE_UP_TRIANGLES;
+				//1st idea: over all 32 combos:
+				
+				int tmpCheckProb = checkTriangleProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+				
+				tmpCheckProb = tmpCheckProb  & RELEVANT_TILES_NOT_LEFTMOST;
+				
+				if( tmpCheckProb != 0) {
+					//Collision:
+					
+					/* From random thread poster called VArtem: (codeforces)
+					 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
+
+					public static int highestOneBit(int i) {
+					    i |= (i >>  1);
+					    i |= (i >>  2);
+					    i |= (i >>  4);
+					    i |= (i >>  8);
+					    i |= (i >> 16);
+					    return i - (i >>> 1);
+					}
+					*/
+					//find the index of the leftmost bit:
+					int getHighestBit = tmpCheckProb & RELEVANT_TILES;
+					//Copied algo that's O(log(size)) instead of just O(size):
+					getHighestBit |= (getHighestBit >>  1);
+					getHighestBit |= (getHighestBit >>  2);
+					getHighestBit |= (getHighestBit >>  4);
+					getHighestBit |= (getHighestBit >>  8);
+					getHighestBit |= (getHighestBit >> 16);
+					
+					
+					int answer = getHighestBit - (getHighestBit >>> 1);
+					
+					//The two variables below are made to get rid of one if condition about how to handle case
+					//where the leftmost bit interferes with rightmost tile.
+					int answerisLeftMostTile = (answer >> (numBits-1)) & 1;
+					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 1;
+					
+					if(answerisLeftMostTile + answerNotLeftMost == 0) {
+						System.out.println(tmpCheckProb);
+					}
+					if(!((answerNotLeftMost > 0) ^ (answerisLeftMostTile > 0))) {
+						System.out.println("i: " + i);
+						System.out.println("j: " + j);
+						System.out.println("Doh1!: " + tmpCheckProb);
+						System.out.println("Doh2!: " + answerNotLeftMost);
+						System.out.println("Doh3!: " + answerisLeftMostTile);
+						System.exit(1);
+					}
+					
+					if(answerisLeftMostTile > 1) {
+						System.out.println("Ah!");
+						System.out.println("Doh!: " + answerisLeftMostTile);
+						System.exit(1);
+					}
+					//System.out.println("answerisLeftMostTile: " + answerisLeftMostTile);
+					//System.out.println("answerNotLeftMost: " + answerNotLeftMost);
+					//System.out.println(belowLayer + " and " + j + " collision. Add " + (answerisLeftMostTile + answerNotLeftMost));
+					
+					if(debugJSkip <= j) {
+						debugJSkip = j + answerisLeftMostTile + answerNotLeftMost;
+					}
+					
+				    j += answerisLeftMostTile + answerNotLeftMost;
+
+				} else {
+
+					//No Collision:
+					ret[i][j] = true;
+					j++;
+				}
+				
+			}
+			
+		}
+		
+		return ret;
+	}
+	
+	public static boolean[][] getTableTubeTriangleLattice(int numBits) { 
+		
+		int length = (int)Math.pow(2, numBits);
+
+		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
+		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
+		
+		boolean ret[][] = new boolean[length][length];
+		
+		for(int i=0; i<ret.length; i++) {
+
+			int extendedTop = (i << numBits) + i;
+			
+			int topLeftValues = (extendedTop >> 2) & RIGHT_SIDE_UP_TRIANGLES;
+			int topMidValues = (extendedTop >> 1) & RIGHT_SIDE_UP_TRIANGLES;
+			int topRightValues = extendedTop & RIGHT_SIDE_UP_TRIANGLES;
+
+			int debugJSkip = 0;
+			
+			for(int j=0; j<Math.pow(2, numBits); ) {
+				
+				int extendedBottom = j + (j << numBits);
+
+				int bottomLeftValues = (extendedBottom >> 1) & RIGHT_SIDE_UP_TRIANGLES;
+				int bottomMidValues = extendedBottom & RIGHT_SIDE_UP_TRIANGLES;
+				int bottomRightValues = (extendedBottom << 1) & RIGHT_SIDE_UP_TRIANGLES;
+				//1st idea: over all 32 combos:
+				
+				if(i == 15 && j == 9) {
+					System.out.println("Question!");
+				}
+				int tmpCheckProb = checkTriangleProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+				
+				tmpCheckProb = tmpCheckProb  & RELEVANT_TILES;
+				
+				if( tmpCheckProb != 0) {
+					//Collision:
+					
+					/* From random thread poster called VArtem: (codeforces)
+					 * There is Integer.highestOneBit(int i) method in Java that returns int with leftmost bit set in x. It is implemented as follows:
+
+					public static int highestOneBit(int i) {
+					    i |= (i >>  1);
+					    i |= (i >>  2);
+					    i |= (i >>  4);
+					    i |= (i >>  8);
+					    i |= (i >> 16);
+					    return i - (i >>> 1);
+					}
+					*/
+					//find the index of the leftmost bit:
+					int getHighestBit = tmpCheckProb & RELEVANT_TILES;
+					//Copied algo that's O(log(size)) instead of just O(size):
+					getHighestBit |= (getHighestBit >>  1);
+					getHighestBit |= (getHighestBit >>  2);
+					getHighestBit |= (getHighestBit >>  4);
+					getHighestBit |= (getHighestBit >>  8);
+					getHighestBit |= (getHighestBit >> 16);
+					
+					
+					int answer = getHighestBit - (getHighestBit >>> 1);
+					
+					//The two variables below are made to get rid of one if condition about how to handle case
+					//where the leftmost bit interferes with rightmost tile.
+					int answerisLeftMostTile = (answer >> (numBits-1)) & 1;
+					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 1;
+					
+					if(answerisLeftMostTile + answerNotLeftMost == 0) {
+						System.out.println(tmpCheckProb);
+					}
+					if(!((answerNotLeftMost > 0) ^ (answerisLeftMostTile > 0))) {
+						System.out.println("i: " + i);
+						System.out.println("j: " + j);
+						System.out.println("Doh1!: " + tmpCheckProb);
+						System.out.println("Doh2!: " + answerNotLeftMost);
+						System.out.println("Doh3!: " + answerisLeftMostTile);
+						System.exit(1);
+					}
+					
+					if(answerisLeftMostTile > 1) {
+						System.out.println("Ah!");
+						System.out.println("Doh!: " + answerisLeftMostTile);
+						System.exit(1);
+					}
+					//System.out.println("answerisLeftMostTile: " + answerisLeftMostTile);
+					//System.out.println("answerNotLeftMost: " + answerNotLeftMost);
+					//System.out.println(belowLayer + " and " + j + " collision. Add " + (answerisLeftMostTile + answerNotLeftMost));
+					
+					if(debugJSkip <= j) {
+						debugJSkip = j + answerisLeftMostTile + answerNotLeftMost;
+					}
+					
+				    j += answerisLeftMostTile + answerNotLeftMost;
+
+				} else {
+
+					//No Collision:
+					ret[i][j] = true;
+					j++;
+				}
+				
+			}
+			
+		}
+		
+		return ret;
+	}
+	
+	
 	private class GPanel extends JPanel {
 		
 		@Override
@@ -211,11 +490,32 @@ public class DrawOnGui implements ActionListener {
 			
 			int startX= 10;
 			int startY = 10;
+
+			int N_TO_USE = -1;
+
+			boolean IS_TRIANGLE = true;
+			boolean ret[][] = null;
+
+			if(IS_TRIANGLE) {
+				
+				int EVEN_NUM_N = N - N%2;
+				System.out.println("EVEN_NUM_N = " + EVEN_NUM_N);
+				//ret = getTableTubeTriangleLattice(EVEN_NUM_N);
+				ret = getTableTriangleLattice(EVEN_NUM_N);
+				N_TO_USE = EVEN_NUM_N;
+			} else {
+
+				//boolean ret[][] = getTableTubeSquareLattice(N);
+				
+				ret = getTableSquareLattice(N);
+				N_TO_USE = N;
+			}
 			
-			int numDivs = (int) Math.pow(2, N);
+			int numDivs = (int) Math.pow(2, N_TO_USE);
 			int gap = DIM / numDivs;
 			System.out.println("Gap: " + gap);
 			System.out.println("numDivs: " + numDivs);
+
 			
 			int DIV_BETWEEN_SQUARES = 1;
 			
@@ -223,8 +523,7 @@ public class DrawOnGui implements ActionListener {
 				DIV_BETWEEN_SQUARES = 0;
 			}
 			
-			//boolean ret[][] = getTableTubeSquareLattice(N);
-			boolean ret[][] = getTableSquareLattice(N);
+			
 			
 			for(int i=0; i<numDivs; i++) {
 				for(int j=0; j<numDivs; j++) {

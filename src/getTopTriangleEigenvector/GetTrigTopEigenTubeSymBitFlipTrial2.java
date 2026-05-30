@@ -1,5 +1,7 @@
 package getTopTriangleEigenvector;
 
+//TODO: why is this much slower than original!!!
+
 import java.util.Hashtable;
 
 public class GetTrigTopEigenTubeSymBitFlipTrial2 {
@@ -48,9 +50,12 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 	}
 	
 	
+	//1.59502790692782
+	//1.5950279069278188
+	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 14;
+		int NUM_BITS_TO_USE = 20;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -209,54 +214,67 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 
 		//System.out.println("Ret: " + tmpCheckProb);
 		
-		return tmpCheckProb & RIGHT_SIDE_UP_TRIANGLES;
+		return tmpCheckProb & POWER_OF_4_BITS_MINUS_1;
 	}
 
-	public static int RIGHT_SIDE_UP_TRIANGLES = 0;
+	public static int POWER_OF_4_BITS_MINUS_1 = 0;
+	//public static int UP_SIDE_DOWN_TRIANGLES = 0;
 	static {
-		RIGHT_SIDE_UP_TRIANGLES = 0;
+		POWER_OF_4_BITS_MINUS_1 = 0;
 		for(int i=0; i<14; i++) {
-			RIGHT_SIDE_UP_TRIANGLES = 4*RIGHT_SIDE_UP_TRIANGLES + 2;
+			POWER_OF_4_BITS_MINUS_1 = 4*POWER_OF_4_BITS_MINUS_1 + 1;
 		}
-		
+		//UP_SIDE_DOWN_TRIANGLES = RIGHT_SIDE_UP_TRIANGLES >> 1;
+		POWER_OF_4_BITS_MINUS_1 = POWER_OF_4_BITS_MINUS_1 - 1;
 	}
 	
+	
+	public static long debugNumIter = 0;
 	//TODO: BUG: I reversed top and bottom!
 	//TOOD: does that make a diff?
 	
 	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
 		
-		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
-		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
+		int RELEVANT_TILES = (int)Math.pow(2, numBits+2) - 1;
+		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits) - 1;
 		
 		double newVector[] = new double[vector.length];
 		
+		debugNumIter = 0;
 		for(int i=0; i<vector.length; i++) {
 
-			int belowLayer = mappingIndexToNum.get(i);
+			int aboveLayer = mappingIndexToNum.get(i);
+
+			if(aboveLayer == 5) {
+				System.out.println("DEBUG");
+			}
 			
 			//TODO: I reversed top/bottom. I didn't think this through...
 			//FOR EXAMPLE: the j skip might be wrong now...
-			int extendedTop = belowLayer + (belowLayer << numBits);
+			//TODO: something seems off!
+			int extendedTop = aboveLayer + (aboveLayer << numBits);
 	
-			int topLeftValues = (extendedTop >> 2) & RIGHT_SIDE_UP_TRIANGLES;
-			int topMidValues = (extendedTop >> 1) & RIGHT_SIDE_UP_TRIANGLES;
-			int topRightValues = extendedTop & RIGHT_SIDE_UP_TRIANGLES;
+			int topLeftValues = (extendedTop) & POWER_OF_4_BITS_MINUS_1;
+			int topMidValues = (extendedTop << 1) & POWER_OF_4_BITS_MINUS_1;
+			int topRightValues = (extendedTop << 2) & POWER_OF_4_BITS_MINUS_1;
 			
 			
 			int debugJSkip = 0;
 			
 			for(int j=0; j<Math.pow(2, numBits); ) {
 				
-
+				debugNumIter++;
 				int extendedBottom = j + (j << numBits);
 
-				int bottomLeftValues = (extendedBottom >> 1) & RIGHT_SIDE_UP_TRIANGLES;
-				int bottomMidValues = extendedBottom & RIGHT_SIDE_UP_TRIANGLES;
-				int bottomRightValues = (extendedBottom << 1) & RIGHT_SIDE_UP_TRIANGLES;
+				int bottomLeftValues = (extendedBottom >> 1) & POWER_OF_4_BITS_MINUS_1;
+				int bottomMidValues = (extendedBottom) & POWER_OF_4_BITS_MINUS_1;
+				int bottomRightValues = (extendedBottom << 1) & POWER_OF_4_BITS_MINUS_1;
 				//1st idea: over all 32 combos:
 				
 				int tmpCheckProb = checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+				
+				tmpCheckProb = tmpCheckProb  & RELEVANT_TILES;
+				
 				
 				if( tmpCheckProb != 0) {
 					//Collision:
@@ -289,7 +307,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 					//The two variables below are made to get rid of one if condition about how to handle case
 					//where the leftmost bit interferes with rightmost tile.
 					
-					int answerisLeftMostTile = (answer >> (numBits-1)) & 1;
+					int answerisLeftMostTile = (answer >> (numBits)) & 3;
 					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 1;
 					
 					if(answerisLeftMostTile + answerNotLeftMost == 0) {
@@ -315,21 +333,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 						debugJSkip = j + answerisLeftMostTile + answerNotLeftMost;
 					}
 				    j += answerisLeftMostTile + answerNotLeftMost;
-
 				    
-				    
-				    //Final eigenvalue for triangle version: 106.5817459006501
-				    //Estimated growth rate for triangle version: 1.5950278960753408
-				    //Final eigenvalue for triangle version: 6.458813769776312
-				    //Estimated growth rate for triangle version: 1.5941830624788615
-					
-					//j++;
-
-				    //Final eigenvalue for triangle version: 6.458813769776312
-				    //Estimated growth rate for triangle version: 1.5941830624788615
-				    //Final eigenvalue for triangle version: 106.5817459006501
-					//Estimated growth rate for triangle version: 1.5950278960753408					
-					
 				} else {
 					//System.out.println(belowLayer + " and " + j + " no collision");
 					if(j < debugJSkip) {
@@ -345,7 +349,9 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 			}
 			
 		}
-				
+		
+		System.out.println("NUM iterations: " + debugNumIter);
+		System.out.println("RIGHT_SIDE_UP_TRIANGLES: " + POWER_OF_4_BITS_MINUS_1);
 		return newVector;
 	}
 	

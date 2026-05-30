@@ -209,14 +209,15 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 
 		//System.out.println("Ret: " + tmpCheckProb);
 		
-		return tmpCheckProb & RIGHT_SIDE_UP_TRIANGLES;
+		return tmpCheckProb & NON_POWER_4_BITS;
 	}
 
-	public static int RIGHT_SIDE_UP_TRIANGLES = 0;
+	//TODO: AHH! Don't call them RIGHT_SIDE_UP_TRIANGLES
+	public static int NON_POWER_4_BITS = 0;
 	static {
-		RIGHT_SIDE_UP_TRIANGLES = 0;
+		NON_POWER_4_BITS = 0;
 		for(int i=0; i<14; i++) {
-			RIGHT_SIDE_UP_TRIANGLES = 4*RIGHT_SIDE_UP_TRIANGLES + 2;
+			NON_POWER_4_BITS = 4*NON_POWER_4_BITS + 2;
 		}
 		
 	}
@@ -230,6 +231,8 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits - 1) - 1;
 		
 		double newVector[] = new double[vector.length];
+
+		long debugNumIter = 0;
 		
 		for(int i=0; i<vector.length; i++) {
 
@@ -237,24 +240,27 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 			
 			int extendedBottom = belowLayer + (belowLayer << numBits);
 
-			int bottomLeftValues = (extendedBottom >> 1) & RIGHT_SIDE_UP_TRIANGLES;
-			int bottomMidValues = extendedBottom & RIGHT_SIDE_UP_TRIANGLES;
-			int bottomRightValues = (extendedBottom << 1) & RIGHT_SIDE_UP_TRIANGLES;
+			int bottomLeftValues = (extendedBottom >> 1) & NON_POWER_4_BITS;
+			int bottomMidValues = extendedBottom & NON_POWER_4_BITS;
+			int bottomRightValues = (extendedBottom << 1) & NON_POWER_4_BITS;
 			
 			
 			int debugJSkip = 0;
 			
 			for(int j=0; j<Math.pow(2, numBits); ) {
+				debugNumIter++;
 				
 				int extendedTop = j + (j << numBits);
 		
-				int topLeftValues = (extendedTop >> 2) & RIGHT_SIDE_UP_TRIANGLES;
-				int topMidValues = (extendedTop >> 1) & RIGHT_SIDE_UP_TRIANGLES;
-				int topRightValues = extendedTop & RIGHT_SIDE_UP_TRIANGLES;
+				int topLeftValues = (extendedTop >> 2) & NON_POWER_4_BITS;
+				int topMidValues = (extendedTop >> 1) & NON_POWER_4_BITS;
+				int topRightValues = extendedTop & NON_POWER_4_BITS;
 				
 				//1st idea: over all 32 combos:
 				
 				int tmpCheckProb = checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
+				
+				tmpCheckProb = tmpCheckProb  & RELEVANT_TILES;
 				
 				if( tmpCheckProb != 0) {
 					//Collision:
@@ -343,7 +349,8 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 			}
 			
 		}
-				
+
+		System.out.println("NUM iterations: " + debugNumIter);
 		return newVector;
 	}
 	
