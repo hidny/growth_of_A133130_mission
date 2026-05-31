@@ -52,10 +52,19 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 	
 	//1.59502790692782
 	//1.5950279069278188
+	//Wrong now:
+	//1.5916444275957222
+	
+	//Right now:
+	//NUM iterations: 121202039 ( 4mins)
+	//1.5950279069278188
+	//Orig:
+	//NUM iterations:  11076120
+	//1.59502790692782
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 20;
+		int NUM_BITS_TO_USE = 16;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -254,9 +263,9 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 			//TODO: something seems off!
 			int extendedTop = aboveLayer + (aboveLayer << numBits);
 	
-			int topLeftValues = (extendedTop) & POWER_OF_4_BITS_MINUS_1;
-			int topMidValues = (extendedTop << 1) & POWER_OF_4_BITS_MINUS_1;
-			int topRightValues = (extendedTop << 2) & POWER_OF_4_BITS_MINUS_1;
+			int topLeftValues = (extendedTop >> 1) & POWER_OF_4_BITS_MINUS_1;
+			int topMidValues = (extendedTop ) & POWER_OF_4_BITS_MINUS_1;
+			int topRightValues = (extendedTop << 1) & POWER_OF_4_BITS_MINUS_1;
 			
 			
 			int debugJSkip = 0;
@@ -266,9 +275,9 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 				debugNumIter++;
 				int extendedBottom = j + (j << numBits);
 
-				int bottomLeftValues = (extendedBottom >> 1) & POWER_OF_4_BITS_MINUS_1;
-				int bottomMidValues = (extendedBottom) & POWER_OF_4_BITS_MINUS_1;
-				int bottomRightValues = (extendedBottom << 1) & POWER_OF_4_BITS_MINUS_1;
+				int bottomLeftValues = (extendedBottom) & POWER_OF_4_BITS_MINUS_1;
+				int bottomMidValues = (extendedBottom << 1) & POWER_OF_4_BITS_MINUS_1;
+				int bottomRightValues = (extendedBottom << 2) & POWER_OF_4_BITS_MINUS_1;
 				//1st idea: over all 32 combos:
 				
 				int tmpCheckProb = checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
@@ -308,7 +317,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 					//where the leftmost bit interferes with rightmost tile.
 					
 					int answerisLeftMostTile = (answer >> (numBits)) & 3;
-					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 1;
+					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 2;
 					
 					if(answerisLeftMostTile + answerNotLeftMost == 0) {
 						System.out.println(tmpCheckProb);
