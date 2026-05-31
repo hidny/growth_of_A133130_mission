@@ -50,7 +50,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 18;
+		int NUM_BITS_TO_USE = 20;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -305,9 +305,12 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 						System.exit(1);
 					}
 					
-					int tmpSkip = j + answerisLeftMostTile + answerNotLeftMost;
-					if(tmpSkip <= debugJSkip) {
-						debugJSkip = tmpSkip;
+					if(j>=debugJSkip) {
+						int tmpSkip = j + answerisLeftMostTile + answerNotLeftMost;
+						if(tmpSkip >= debugJSkip) {
+							//System.out.println("Last j to update the skip: " + j);
+							debugJSkip = tmpSkip;
+						}
 					}
 					j += answerisLeftMostTile + answerNotLeftMost;
 					//Debug option to make suse the skips don't miss anything:
