@@ -310,7 +310,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 						debugJSkip = tmpSkip;
 					}
 					j += answerisLeftMostTile + answerNotLeftMost;
-					//Debug option to make suse the skips don't miss anything:
+					//Testing to make suse the skips don't miss anything:
 					//j++;
 
 				} else {
