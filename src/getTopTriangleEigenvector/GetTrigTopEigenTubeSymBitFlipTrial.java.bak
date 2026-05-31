@@ -125,9 +125,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 			
 		}
 		
-		
 		//TODO: adjust vectors to even better guess so that the doesn't need as many iterations.
-		
 		System.out.println("Number of orbits: " + countOrbits);
 		
 		
@@ -156,6 +154,8 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		}
 		System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
 		System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
+		
+		System.out.println("Done for GetTrigTopEigenTubeSymBitFlipTrial.java");
 	}
 
 	
@@ -310,7 +310,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 						debugJSkip = tmpSkip;
 					}
 					j += answerisLeftMostTile + answerNotLeftMost;
-					//Testing to make suse the skips don't miss anything:
+					//Debug option to make suse the skips don't miss anything:
 					//j++;
 
 				} else {

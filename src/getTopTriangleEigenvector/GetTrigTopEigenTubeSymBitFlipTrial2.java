@@ -1,8 +1,10 @@
 package getTopTriangleEigenvector;
 
-//TODO: why is this much slower than original!!!
-
 import java.util.Hashtable;
+
+//This is slightly faster than the original (GetTrigTopEigenTubeSymBitFlipTrial.java), and more well thought out.
+//The number of iterations needed per matrix mult is very slightly less because it's more aggressive.
+//and the triangular grid is being build bottom to top here.
 
 public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 	
@@ -50,21 +52,6 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 	}
 	
 	
-	//Orig:
-	//NUM iterations:  11076120
-	//1.59502790692782
-	//Right now:
-	//NUM iterations:   8214879
-	//1.59502790692782
-	//It's better! Knock on wood!
-	
-	//N=18:
-	//2:
-	//NUM iterations: 64779606
-	//Estimated growth rate for triangle version: 1.5950278398038673
-	//1/orig:
-	//NUM iterations: 87328060
-	//Estimated growth rate for triangle version: 1.5950278398038673
 	public static void main(String[] args) {
 		
 		int NUM_BITS_TO_USE = 18;
@@ -142,9 +129,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 			
 		}
 		
-		
 		//TODO: adjust vectors to even better guess so that the doesn't need as many iterations.
-		
 		System.out.println("Number of orbits: " + countOrbits);
 		
 		
@@ -173,6 +158,8 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 		}
 		System.out.println("Debug 2nd one because it's tending to something as numbits increase!");
 		System.out.println(mappingIndexToNum.get(1) + " -> " + vector[1]);
+
+		System.out.println("Done for GetTrigTopEigenTubeSymBitFlipTrial2.java");
 	}
 
 	
