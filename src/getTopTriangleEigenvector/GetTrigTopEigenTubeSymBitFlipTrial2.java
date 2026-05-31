@@ -58,9 +58,16 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 	//1.59502790692782
 	//It's better! Knock on wood!
 	
+	//N=18:
+	//2:
+	//NUM iterations: 64779606
+	//Estimated growth rate for triangle version: 1.5950278398038673
+	//1/orig:
+	//NUM iterations: 87328060
+	//Estimated growth rate for triangle version: 1.5950278398038673
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 4;
+		int NUM_BITS_TO_USE = 18;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -247,10 +254,6 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 		for(int i=0; i<vector.length; i++) {
 
 			int aboveLayer = mappingIndexToNum.get(i);
-
-			if(aboveLayer == 5) {
-				System.out.println("DEBUG");
-			}
 			
 			//TODO: I reversed top/bottom. I didn't think this through...
 			//FOR EXAMPLE: the j skip might be wrong now...
