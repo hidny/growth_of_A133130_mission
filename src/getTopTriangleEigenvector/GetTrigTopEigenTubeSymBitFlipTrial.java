@@ -212,7 +212,6 @@ public class GetTrigTopEigenTubeSymBitFlipTrial {
 		return tmpCheckProb & NON_POWER_4_BITS;
 	}
 
-	//TODO: AHH! Don't call them RIGHT_SIDE_UP_TRIANGLES
 	public static int NON_POWER_4_BITS = 0;
 	static {
 		NON_POWER_4_BITS = 0;

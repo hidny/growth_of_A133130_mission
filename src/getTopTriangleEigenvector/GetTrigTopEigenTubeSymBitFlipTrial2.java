@@ -50,21 +50,17 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 	}
 	
 	
-	//1.59502790692782
-	//1.5950279069278188
-	//Wrong now:
-	//1.5916444275957222
-	
-	//Right now:
-	//NUM iterations: 121202039 ( 4mins)
-	//1.5950279069278188
 	//Orig:
 	//NUM iterations:  11076120
 	//1.59502790692782
+	//Right now:
+	//NUM iterations:   8214879
+	//1.59502790692782
+	//It's better! Knock on wood!
 	
 	public static void main(String[] args) {
 		
-		int NUM_BITS_TO_USE = 16;
+		int NUM_BITS_TO_USE = 4;
 		int NUM_IT = 30;
 		
 		if(NUM_BITS_TO_USE % 2 != 0) {
@@ -223,29 +219,27 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 
 		//System.out.println("Ret: " + tmpCheckProb);
 		
-		return tmpCheckProb & POWER_OF_4_BITS_MINUS_1;
+		return tmpCheckProb & NON_POWER_4_BITS;
 	}
 
-	public static int POWER_OF_4_BITS_MINUS_1 = 0;
-	//public static int UP_SIDE_DOWN_TRIANGLES = 0;
+	public static int NON_POWER_4_BITS = 0;
 	static {
-		POWER_OF_4_BITS_MINUS_1 = 0;
+		NON_POWER_4_BITS = 0;
 		for(int i=0; i<14; i++) {
-			POWER_OF_4_BITS_MINUS_1 = 4*POWER_OF_4_BITS_MINUS_1 + 1;
+			NON_POWER_4_BITS = 4*NON_POWER_4_BITS + 2;
 		}
-		//UP_SIDE_DOWN_TRIANGLES = RIGHT_SIDE_UP_TRIANGLES >> 1;
-		POWER_OF_4_BITS_MINUS_1 = POWER_OF_4_BITS_MINUS_1 - 1;
+		
 	}
 	
 	
 	public static long debugNumIter = 0;
 	//TODO: BUG: I reversed top and bottom!
-	//TOOD: does that make a diff?
+	//TODO: does that make a diff?
 	
 	public static double[] multCurrentVection(double vector[], int numBits, Hashtable <Integer, Integer> mappingNumToIndex, Hashtable <Integer, Integer> mappingIndexToNum) {
 		
-		int RELEVANT_TILES = (int)Math.pow(2, numBits+2) - 1;
-		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits) - 1;
+		int RELEVANT_TILES = (int)Math.pow(2, numBits) - 1;
+		int RELEVANT_TILES_NOT_LEFTMOST = (int)Math.pow(2, numBits-1) - 1;
 		
 		double newVector[] = new double[vector.length];
 		
@@ -263,9 +257,9 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 			//TODO: something seems off!
 			int extendedTop = aboveLayer + (aboveLayer << numBits);
 	
-			int topLeftValues = (extendedTop >> 1) & POWER_OF_4_BITS_MINUS_1;
-			int topMidValues = (extendedTop ) & POWER_OF_4_BITS_MINUS_1;
-			int topRightValues = (extendedTop << 1) & POWER_OF_4_BITS_MINUS_1;
+			int topLeftValues = (extendedTop >> 1) & NON_POWER_4_BITS;
+			int topMidValues = (extendedTop ) & NON_POWER_4_BITS;
+			int topRightValues = (extendedTop << 1) & NON_POWER_4_BITS;
 			
 			
 			int debugJSkip = 0;
@@ -275,9 +269,9 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 				debugNumIter++;
 				int extendedBottom = j + (j << numBits);
 
-				int bottomLeftValues = (extendedBottom) & POWER_OF_4_BITS_MINUS_1;
-				int bottomMidValues = (extendedBottom << 1) & POWER_OF_4_BITS_MINUS_1;
-				int bottomRightValues = (extendedBottom << 2) & POWER_OF_4_BITS_MINUS_1;
+				int bottomLeftValues = (extendedBottom >> 2) & NON_POWER_4_BITS;
+				int bottomMidValues = (extendedBottom >> 1) & NON_POWER_4_BITS;
+				int bottomRightValues = (extendedBottom) & NON_POWER_4_BITS;
 				//1st idea: over all 32 combos:
 				
 				int tmpCheckProb = checkProb(topLeftValues, topMidValues, topRightValues, bottomRightValues, bottomMidValues, bottomLeftValues);
@@ -316,8 +310,8 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 					//The two variables below are made to get rid of one if condition about how to handle case
 					//where the leftmost bit interferes with rightmost tile.
 					
-					int answerisLeftMostTile = (answer >> (numBits)) & 3;
-					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST) >> 2;
+					int answerisLeftMostTile = (answer >> (numBits - 1)) & 255;
+					int answerNotLeftMost = (answer  & RELEVANT_TILES_NOT_LEFTMOST);
 					
 					if(answerisLeftMostTile + answerNotLeftMost == 0) {
 						System.out.println(tmpCheckProb);
@@ -337,15 +331,36 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 					//System.out.println("answerisLeftMostTile: " + answerisLeftMostTile);
 					//System.out.println("answerNotLeftMost: " + answerNotLeftMost);
 					//System.out.println(belowLayer + " and " + j + " collision. Add " + (answerisLeftMostTile + answerNotLeftMost));
+
+					//Edge-case where we should increment j by only 1 instead of 2 if j%2 == 1:
+					int minus_adjust = ((2 & answerNotLeftMost) >> 1) & j;
 					
-					if(debugJSkip <= j) {
-						debugJSkip = j + answerisLeftMostTile + answerNotLeftMost;
+					j += answerisLeftMostTile + answerNotLeftMost - minus_adjust;
+					
+					
+					int debugSkipAmt = answerisLeftMostTile + answerNotLeftMost - minus_adjust;;
+					if(debugSkipAmt > 1) {
+						debugJSkip = debugSkipAmt;
+						//System.out.println("i: " + mappingIndexToNum.get(i));
+						//System.out.println("j: " +j);
+						//System.out.println("Next:");
+						//System.out.println("answerisLeftMostTile: " + answerisLeftMostTile);
+						//System.out.println("answerNotLeftMost: " + answerNotLeftMost);
 					}
-				    j += answerisLeftMostTile + answerNotLeftMost;
+					if(debugSkipAmt == 0) {
+						System.out.println("Oops!");
+						System.exit(1);
+					}
+					//System.out.println(j);
+					//System.out.println(debugSkipAmt);
+					//1.59502790692782
+					//j++;
 				    
 				} else {
 					//System.out.println(belowLayer + " and " + j + " no collision");
 					if(j < debugJSkip) {
+						System.out.println("i: " + mappingIndexToNum.get(i));
+						System.out.println("j: " +j);
 						System.out.println("DOH debug J skip!");
 						System.exit(1);
 					}
@@ -360,7 +375,7 @@ public class GetTrigTopEigenTubeSymBitFlipTrial2 {
 		}
 		
 		System.out.println("NUM iterations: " + debugNumIter);
-		System.out.println("RIGHT_SIDE_UP_TRIANGLES: " + POWER_OF_4_BITS_MINUS_1);
+		System.out.println("RIGHT_SIDE_UP_TRIANGLES: " + NON_POWER_4_BITS);
 		return newVector;
 	}
 	
