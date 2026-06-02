@@ -5,6 +5,13 @@ import java.util.Random;
 
 public class BasicSquareSimulator {
 
+	//TODO:
+	// Test that transpose looks similar to result.
+	//TODO:
+	//Paint regions diff coluus...
+	//TODO:
+	//rewrite to use num possibilities to gen random result?
+	
 	// No 42 equals close enough to random.
 	public static Random random = new Random(42);
 	
@@ -12,7 +19,7 @@ public class BasicSquareSimulator {
 		// TODO Auto-generated method stub
 
 		boolean start[] = getStart(200);
-		boolean reformat[] = reformatArrayForNo2x2Same(start);
+		boolean reformat[] = reformatArrayForNo2x2SameOrViceVersa(start, 0);
 		
 		basicPrint(start);
 		basicPrint(reformat);
@@ -29,8 +36,94 @@ public class BasicSquareSimulator {
 		
 		//TODO: make sure the numbers from  the function in this class is alligned with what's found in the
 		// matrices in other files.
+
+		boolean prev[];
+		boolean cur[] = start;
+		
+		int PRINT_START = 300;
+		int NUM_LINES = 100;
+		for(int i=0; i<PRINT_START + NUM_LINES; i++) {
+
+			//System.out.println();
+			if( i > PRINT_START) {
+				basicPrint(reformatArrayForNo2x2SameOrViceVersa(cur, i));
+			}
+			//basicPrint(cur);
+			//System.out.println();
+			
+			prev = cur;
+			cur = createNextLayerNo2x2Match(cur);
+			
+			for(int j=1; j<cur.length; j++) {
+				if(prev[j] == prev[j-1] && prev[j] == cur[j] && cur[j] == cur[j-1]) {
+					System.out.println("Doh! Found 2x2 substring");
+					System.exit(1);
+				}
+			}
+		}
+		
 	}
 
+	public static boolean[] createNextLayer(boolean curLayerIntersectAvoid[], int curAdjustment) {
+		//BigInteger numSolutions = getNumSolutions(curLayer);
+		
+		//System.out.println("Num Solutions: " + numSolutions);
+		
+		boolean reformatedCur[] = createNextLayerNo2x2Match(reformatArrayForNo2x2SameOrViceVersa(curLayerIntersectAvoid, curAdjustment));
+		
+		//System.out.println("Hello");
+		return reformatArrayForNo2x2SameOrViceVersa(reformatedCur, curAdjustment+1);
+	}
+	
+	public static boolean[] createNextLayerNo2x2Match(boolean curLayerNo2x2Match[]) {
+
+		
+		boolean nextLayer[] = new boolean[curLayerNo2x2Match.length];
+		
+		for(int i=0; i<nextLayer.length;) {
+			
+			boolean prevMatch = false;
+			
+			int lengthRun = getLengthOfRun(curLayerNo2x2Match, i);
+			
+			for(int j=0; j < lengthRun; j++) {
+				
+				if(prevMatch) {
+					nextLayer[i + j] = ! curLayerNo2x2Match[i + j];
+					prevMatch = false;
+					continue;
+				}
+			
+				long numPos = fib[(lengthRun-j) + 1];
+				long numPosMatchAbove = fib[(lengthRun-j) - 1];
+				
+				boolean shouldMatch = (numPos * Math.random()) < numPosMatchAbove;
+				
+				
+				nextLayer[i + j] = !(shouldMatch ^ curLayerNo2x2Match[i + j]);
+				prevMatch = shouldMatch;
+				
+			}
+			
+			i += lengthRun;
+			
+		}
+		
+		return nextLayer;
+	}
+	
+	public static int getLengthOfRun(boolean arrayNo2x2[], int index) {
+		int ret = 1;
+		
+		//basicPrint(arrayNo2x2);
+		
+		for(int i=index+1; i<arrayNo2x2.length && arrayNo2x2[i] == arrayNo2x2[index]; i++) {
+			ret++;
+		}
+		//System.out.println(ret);
+		
+		return ret;
+	}
 	
 	public static boolean[] getStart(int n) {
 		boolean array[] = new boolean[n];
@@ -63,12 +156,12 @@ public class BasicSquareSimulator {
 		System.out.println(tmp);
 	}
 	
-	public static boolean[] reformatArrayForNo2x2Same(boolean array[]) {
+	public static boolean[] reformatArrayForNo2x2SameOrViceVersa(boolean array[], int adjustment) {
 		boolean ret[] = new boolean[array.length];
 		
 		
 		for(int i=0; i<array.length; i++) {
-			ret[i] = array[i] ^ (i % 2 == 0);
+			ret[i] = array[i] ^ ((adjustment + i) % 2 == 0);
 		}
 		
 		return ret;
@@ -93,7 +186,7 @@ public class BasicSquareSimulator {
 	
 	public static BigInteger getNumSolutions(boolean array[]) {
 		
-		boolean reformat[] = reformatArrayForNo2x2Same(array);
+		boolean reformat[] = reformatArrayForNo2x2SameOrViceVersa(array, 0);
 		
 		BigInteger ret = BigInteger.ONE;
 		
@@ -109,7 +202,7 @@ public class BasicSquareSimulator {
 			
 			ret = ret.multiply(fibBig[1 + curLength]);
 			
-			System.out.println("curLength: " + curLength);
+			//System.out.println("curLength: " + curLength);
 		}
 		
 		//##___#_######_####_#_#_#___##_#______##____#__##__#_#___####_####_#####_#_#_#__#____#___#__##_#___#_##_#_###_###_#__##_###_#####_####____###_###_######___#__#_#_##_##_##__#_##_#_###_#__#_##______###__
