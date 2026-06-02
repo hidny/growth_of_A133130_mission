@@ -7,7 +7,11 @@ public class BasicSquareSimulator {
 
 	//TODO:
 	// Test that transpose looks similar to result.
+	//TODO: transpose is statistically different! AHH!!!
+	
+	
 	//TODO:
+	
 	//Paint regions diff coluus...
 	//TODO:
 	//rewrite to use num possibilities to gen random result?
@@ -18,7 +22,7 @@ public class BasicSquareSimulator {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		int PRINT_START = 500;
+		int PRINT_START = 0;
 		int NUM_LINES = 200;
 		int NUM_COLUMNS = 200;
 		boolean start[] = getStart(NUM_COLUMNS);
