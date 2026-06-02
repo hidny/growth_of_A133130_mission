@@ -81,7 +81,7 @@ public class BasicSquareSimulator {
 				
 				if(map[i][j] && numMap[i][j] == -1) {
 					numMap[i][j] = regionIndex;
-					depthFirstSearch(map, numMap, i, j, regionIndex);
+					depthFirstSearchMark(map, numMap, i, j, regionIndex);
 					regionIndex++;
 				}
 			}
@@ -96,16 +96,100 @@ public class BasicSquareSimulator {
 			for(int j=0; j<map[0].length; j++) {
 				
 				if(map[i][j]) {
-					ret += (numMap[i][j] % 10);
+					ret += getLabelFromIndex(numMap[i][j]);
 				} else {
 					ret += "_";
 				}
 			}
 			System.out.println(ret);
 		}
+
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		
+		
+		int numHoriCross = 0;
+		int numVertCross = 0;
+		
+		boolean explored[][] = new boolean[map.length][map[0].length];
+		
+		for(int i=0; i<map.length; i++) {
+			
+			depthFirstSearchCheckEdges(map, explored, i, 0);
+			
+			for(int i2=0; i2<map.length; i2++) {
+				if(explored[i2][map[0].length - 1]) {
+					System.out.println("Horizontal cross with label: " + getLabelFromIndex(numMap[i2][map[0].length - 1]));
+					numHoriCross++;
+					break;
+				}
+			}
+			for(int i2=0; i2<map.length; i2++) {
+				explored[i2][map[0].length - 1] = false;
+			}
+			
+		}
+		
+		explored = new boolean[map.length][map[0].length];
+		
+		for(int j=0; j<map[0].length; j++) {
+			
+			depthFirstSearchCheckEdges(map, explored, 0, j);
+			
+			for(int j2=0; j2<map[0].length; j2++) {
+				if(explored[map.length - 1][j2]) {
+					System.out.println("Vertical cross with label: " + getLabelFromIndex(numMap[map.length - 1][j2]));
+					
+					numVertCross++;
+					break;
+				}
+			}
+			for(int j2=0; j2<map.length; j2++) {
+				explored[map.length - 1][j2] = false;
+			}
+			
+		}
+		
+
+		System.out.println("Number of vertical cross regions: " + numVertCross);
+		System.out.println("Number of Horizontal cross regions: " + numHoriCross);
 	}
 	
-	public static int[][] depthFirstSearch(boolean map[][], int numMap[][], int curi, int curj, int index) {
+	public static char getLabelFromIndex(int index) {
+		char retChar = (char)( 'a' + (index % 26));
+		if(index % 52 >= 26) {
+			retChar = (char)(retChar + 'A' - 'a');
+		}
+		return retChar;
+	}
+	
+	
+	public static boolean[][] depthFirstSearchCheckEdges(boolean map[][], boolean explored[][], int curi, int curj) {
+		
+		for(int i2=curi-1; i2<=curi+1; i2++) {
+			for(int j2=curj-1; j2<=curj+1; j2++) {
+				
+				if(!(i2 == curi ^ j2 == curj)) {
+					continue;
+				}
+				
+				if(i2 >=0 && j2 >=0 && i2 <map.length && j2 < map[0].length) {
+					
+					if(!explored[i2][j2] && map[i2][j2]) {
+						explored[i2][j2] = true;
+						explored = depthFirstSearchCheckEdges(map, explored, i2, j2);
+					}
+				}
+			}
+		}
+		
+		return explored;
+	}
+	
+	
+	public static int[][] depthFirstSearchMark(boolean map[][], int numMap[][], int curi, int curj, int index) {
 		
 		
 		for(int i2=curi-1; i2<=curi+1; i2++) {
@@ -118,8 +202,8 @@ public class BasicSquareSimulator {
 				if(i2 >=0 && j2 >=0 && i2 <map.length && j2 < map[0].length) {
 					
 					if(numMap[i2][j2] == -1 && map[i2][j2]) {
-						numMap[i2][j2] = index % 10;
-						numMap = depthFirstSearch(map, numMap, i2, j2, index);
+						numMap[i2][j2] = index;
+						numMap = depthFirstSearchMark(map, numMap, i2, j2, index);
 					}
 				}
 			}
