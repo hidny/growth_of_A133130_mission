@@ -13,12 +13,15 @@ public class BasicSquareSimulator {
 	//rewrite to use num possibilities to gen random result?
 	
 	// No 42 equals close enough to random.
-	public static Random random = new Random(42);
+	public static Random random = new Random(30);
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		boolean start[] = getStart(200);
+		int PRINT_START = 500;
+		int NUM_LINES = 200;
+		int NUM_COLUMNS = 200;
+		boolean start[] = getStart(NUM_COLUMNS);
 		boolean reformat[] = reformatArrayForNo2x2SameOrViceVersa(start, 0);
 		
 		basicPrint(start);
@@ -40,13 +43,14 @@ public class BasicSquareSimulator {
 		boolean prev[];
 		boolean cur[] = start;
 		
-		int PRINT_START = 300;
-		int NUM_LINES = 100;
+
+		boolean map[][] = new boolean[NUM_LINES][start.length];
 		for(int i=0; i<PRINT_START + NUM_LINES; i++) {
 
 			//System.out.println();
-			if( i > PRINT_START) {
+			if( i >= PRINT_START) {
 				basicPrint(reformatArrayForNo2x2SameOrViceVersa(cur, i));
+				map[i - PRINT_START] = reformatArrayForNo2x2SameOrViceVersa(cur, i);
 			}
 			//basicPrint(cur);
 			//System.out.println();
@@ -62,7 +66,68 @@ public class BasicSquareSimulator {
 			}
 		}
 		
+		
+		int regionIndex=0;
+		
+		int numMap[][] = new int[map.length][map[0].length];
+		for(int i=0; i<map.length; i++) {
+			for(int j=0; j<map[0].length; j++) {
+				numMap[i][j] = -1;
+			}
+		}
+		
+		for(int i=0; i<map.length; i++) {
+			for(int j=0; j<map[0].length; j++) {
+				
+				if(map[i][j] && numMap[i][j] == -1) {
+					numMap[i][j] = regionIndex;
+					depthFirstSearch(map, numMap, i, j, regionIndex);
+					regionIndex++;
+				}
+			}
+		}
+		
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		System.out.println();
+		for(int i=0; i<map.length; i++) {
+			String ret = "";
+			for(int j=0; j<map[0].length; j++) {
+				
+				if(map[i][j]) {
+					ret += (numMap[i][j] % 10);
+				} else {
+					ret += "_";
+				}
+			}
+			System.out.println(ret);
+		}
 	}
+	
+	public static int[][] depthFirstSearch(boolean map[][], int numMap[][], int curi, int curj, int index) {
+		
+		
+		for(int i2=curi-1; i2<=curi+1; i2++) {
+			for(int j2=curj-1; j2<=curj+1; j2++) {
+				
+				if(!(i2 == curi ^ j2 == curj)) {
+					continue;
+				}
+				
+				if(i2 >=0 && j2 >=0 && i2 <map.length && j2 < map[0].length) {
+					
+					if(numMap[i2][j2] == -1 && map[i2][j2]) {
+						numMap[i2][j2] = index % 10;
+						numMap = depthFirstSearch(map, numMap, i2, j2, index);
+					}
+				}
+			}
+		}
+		
+		return numMap;
+	}
+	
 
 	public static boolean[] createNextLayer(boolean curLayerIntersectAvoid[], int curAdjustment) {
 		//BigInteger numSolutions = getNumSolutions(curLayer);
