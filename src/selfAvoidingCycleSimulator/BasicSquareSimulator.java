@@ -22,159 +22,202 @@ public class BasicSquareSimulator {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 
-		int N = 400;
-		int PADDING = 100;
+		int N = 800;
+		int PADDING = 300;
 		
 		//int PRINT_START = 0;
 		int NUM_LINES = N;
 		int NUM_COLUMNS = N;
 		
-		boolean start[] = getStart(NUM_COLUMNS);
-		boolean reformat[] = reformatArrayForNo2x2SameOrViceVersa(start, 0);
+		int totalNumVertCrosses = 0;
+		int totalNumHoriCrosses = 0;
 		
-		basicPrint(start);
-		basicPrint(reformat);
+		int totalVertSame2InARow = 0;
+		int totalHoriSame2InARow = 0;
+		int debug2InARowSanity = 0;
 		
-		for(int i=0; i<fib.length; i++) {
-			System.out.println(fibBig[i]);
-		}
-		
-		BigInteger numSolutions = getNumSolutions(start);
-		
-		System.out.println("Num Solutions: " + numSolutions);
-		
-		//TODO: take a random num from 0 to numSolutions - 1, then get the random continuation.
-		
-		//TODO: make sure the numbers from  the function in this class is alligned with what's found in the
-		// matrices in other files.
-
-		boolean prev[];
-		boolean cur[] = start;
-		
-		boolean mapThatNeedsPaddingRemoved[][] = new boolean[NUM_LINES][start.length];
-		for(int i=0; i<NUM_LINES; i++) {
-
-			mapThatNeedsPaddingRemoved[i] = reformatArrayForNo2x2SameOrViceVersa(cur, i);
-			//System.out.println();
+		for(int iter=0; iter<100; iter++) {
+			boolean start[] = getStart(NUM_COLUMNS);
+			boolean reformat[] = reformatArrayForNo2x2SameOrViceVersa(start, 0);
 			
-			//basicPrint(reformatArrayForNo2x2SameOrViceVersa(cur, i));
-			//basicPrint(cur);
-			//System.out.println();
+			basicPrint(start);
+			basicPrint(reformat);
 			
-			prev = cur;
-			cur = createNextLayerNo2x2Match(cur);
-			
-			for(int j=1; j<cur.length; j++) {
-				if(prev[j] == prev[j-1] && prev[j] == cur[j] && cur[j] == cur[j-1]) {
-					System.out.println("Doh! Found 2x2 substring");
-					System.exit(1);
-				}
+			for(int i=0; i<fib.length; i++) {
+				System.out.println(fibBig[i]);
 			}
-		}
-		
-		boolean insideMap[][] =  new boolean[NUM_LINES - 2*PADDING][NUM_COLUMNS - 2*PADDING];
+			
+			BigInteger numSolutions = getNumSolutions(start);
+			
+			System.out.println("Num Solutions: " + numSolutions);
+			
+			//TODO: take a random num from 0 to numSolutions - 1, then get the random continuation.
+			
+			//TODO: make sure the numbers from  the function in this class is alligned with what's found in the
+			// matrices in other files.
 	
-		for(int i=0; i<insideMap.length; i++) {
-			for(int j=0; j<insideMap[0].length; j++) {
-				insideMap[i][j] = mapThatNeedsPaddingRemoved[i + PADDING][j + PADDING];
-			}
-		}
-
-		System.out.println();
-		System.out.println();
-		System.out.println("Printing inside map:");
-		for(int i=0; i<insideMap.length; i++) {
-			basicPrint(insideMap[i]);
-		}
-		
-		int regionIndex=0;
-		
-		int numMap[][] = new int[insideMap.length][insideMap[0].length];
-		for(int i=0; i<insideMap.length; i++) {
-			for(int j=0; j<insideMap[0].length; j++) {
-				numMap[i][j] = -1;
-			}
-		}
-		
-		for(int i=0; i<insideMap.length; i++) {
-			for(int j=0; j<insideMap[0].length; j++) {
+			boolean prev[];
+			boolean cur[] = start;
+			
+			boolean mapThatNeedsPaddingRemoved[][] = new boolean[NUM_LINES][start.length];
+			for(int i=0; i<NUM_LINES; i++) {
+	
+				mapThatNeedsPaddingRemoved[i] = reformatArrayForNo2x2SameOrViceVersa(cur, i);
+				//System.out.println();
 				
-				if(insideMap[i][j] && numMap[i][j] == -1) {
-					numMap[i][j] = regionIndex;
-					depthFirstSearchMark(insideMap, numMap, i, j, regionIndex);
-					regionIndex++;
-				}
-			}
-		}
-		
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		for(int i=0; i<insideMap.length; i++) {
-			String ret = "";
-			for(int j=0; j<insideMap[0].length; j++) {
+				//basicPrint(reformatArrayForNo2x2SameOrViceVersa(cur, i));
+				//basicPrint(cur);
+				//System.out.println();
 				
-				if(insideMap[i][j]) {
-					ret += getLabelFromIndex(numMap[i][j]);
-				} else {
-					ret += "_";
+				prev = cur;
+				cur = createNextLayerNo2x2Match(cur);
+				
+				for(int j=1; j<cur.length; j++) {
+					if(prev[j] == prev[j-1] && prev[j] == cur[j] && cur[j] == cur[j-1]) {
+						System.out.println("Doh! Found 2x2 substring");
+						System.exit(1);
+					}
 				}
 			}
-			System.out.println(ret);
-		}
+			
+			boolean insideMap[][] =  new boolean[NUM_LINES - 2*PADDING][NUM_COLUMNS - 2*PADDING];
+		
+			for(int i=0; i<insideMap.length; i++) {
+				for(int j=0; j<insideMap[0].length; j++) {
+					insideMap[i][j] = mapThatNeedsPaddingRemoved[i + PADDING][j + PADDING];
+				}
+			}
+	
 
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		System.out.println();
-		
-		
-		int numHoriCross = 0;
-		int numVertCross = 0;
-		
-		boolean explored[][] = new boolean[insideMap.length][insideMap[0].length];
-		
-		for(int i=0; i<insideMap.length; i++) {
-			
-			depthFirstSearchCheckEdges(insideMap, explored, i, 0);
-			
-			for(int i2=0; i2<insideMap.length; i2++) {
-				if(explored[i2][insideMap[0].length - 1]) {
-					System.out.println("Horizontal cross with label: " + getLabelFromIndex(numMap[i2][insideMap[0].length - 1]));
-					numHoriCross++;
-					break;
-				}
-			}
-			for(int i2=0; i2<insideMap.length; i2++) {
-				explored[i2][insideMap[0].length - 1] = false;
-			}
-			
-		}
-		
-		explored = new boolean[insideMap.length][insideMap[0].length];
-		
-		for(int j=0; j<insideMap[0].length; j++) {
-			
-			depthFirstSearchCheckEdges(insideMap, explored, 0, j);
-			
-			for(int j2=0; j2<insideMap[0].length; j2++) {
-				if(explored[insideMap.length - 1][j2]) {
-					System.out.println("Vertical cross with label: " + getLabelFromIndex(numMap[insideMap.length - 1][j2]));
+
+			for(int i=0; i<insideMap.length; i++) {
+				for(int j=0; j<insideMap[0].length; j++) {
 					
-					numVertCross++;
-					break;
+					if(i > 0 && insideMap[i][j] == insideMap[i-1][j]) {
+						totalVertSame2InARow++;
+					}
+					if(j > 0 && insideMap[i][j] == insideMap[i][j-1]) {
+						totalHoriSame2InARow++;
+					}
+					if(i>0) {
+						debug2InARowSanity++;
+					}
+					if(j>0) {
+						debug2InARowSanity--;
+					}
 				}
 			}
-			for(int j2=0; j2<insideMap.length; j2++) {
-				explored[insideMap.length - 1][j2] = false;
+			
+			System.out.println();
+			System.out.println();
+			System.out.println("Printing inside map:");
+			for(int i=0; i<insideMap.length; i++) {
+				basicPrint(insideMap[i]);
 			}
 			
+			int regionIndex=0;
+			
+			int numMap[][] = new int[insideMap.length][insideMap[0].length];
+			for(int i=0; i<insideMap.length; i++) {
+				for(int j=0; j<insideMap[0].length; j++) {
+					numMap[i][j] = -1;
+				}
+			}
+			
+			for(int i=0; i<insideMap.length; i++) {
+				for(int j=0; j<insideMap[0].length; j++) {
+					
+					if(insideMap[i][j] && numMap[i][j] == -1) {
+						numMap[i][j] = regionIndex;
+						depthFirstSearchMark(insideMap, numMap, i, j, regionIndex);
+						regionIndex++;
+					}
+				}
+			}
+			
+			System.out.println();
+			System.out.println();
+			System.out.println();
+			System.out.println();
+			for(int i=0; i<insideMap.length; i++) {
+				String ret = "";
+				for(int j=0; j<insideMap[0].length; j++) {
+					
+					if(insideMap[i][j]) {
+						ret += getLabelFromIndex(numMap[i][j]);
+					} else {
+						ret += "_";
+					}
+				}
+				System.out.println(ret);
+			}
+	
+			System.out.println();
+			System.out.println();
+			System.out.println();
+			System.out.println();
+			
+			
+			int numHoriCross = 0;
+			int numVertCross = 0;
+			
+			boolean explored[][] = new boolean[insideMap.length][insideMap[0].length];
+			
+			for(int i=0; i<insideMap.length; i++) {
+				
+				depthFirstSearchCheckEdges(insideMap, explored, i, 0);
+				
+				for(int i2=0; i2<insideMap.length; i2++) {
+					if(explored[i2][insideMap[0].length - 1]) {
+						System.out.println("Horizontal cross with label: " + getLabelFromIndex(numMap[i2][insideMap[0].length - 1]));
+						numHoriCross++;
+						break;
+					}
+				}
+				for(int i2=0; i2<insideMap.length; i2++) {
+					explored[i2][insideMap[0].length - 1] = false;
+				}
+				
+			}
+			
+			explored = new boolean[insideMap.length][insideMap[0].length];
+			
+			for(int j=0; j<insideMap[0].length; j++) {
+				
+				depthFirstSearchCheckEdges(insideMap, explored, 0, j);
+				
+				for(int j2=0; j2<insideMap[0].length; j2++) {
+					if(explored[insideMap.length - 1][j2]) {
+						System.out.println("Vertical cross with label: " + getLabelFromIndex(numMap[insideMap.length - 1][j2]));
+						
+						numVertCross++;
+						break;
+					}
+				}
+				for(int j2=0; j2<insideMap.length; j2++) {
+					explored[insideMap.length - 1][j2] = false;
+				}
+				
+			}
+			
+	
+			System.out.println("Number of vertical cross regions: " + numVertCross);
+			System.out.println("Number of Horizontal cross regions: " + numHoriCross);
+			
+			totalNumVertCrosses += numVertCross;
+			totalNumHoriCrosses += numHoriCross;
 		}
 		
+		System.out.println("I'm hoping these number are roughly equal:");
+		System.out.println("Total number of vertical cross regions: " + totalNumVertCrosses);
+		System.out.println("Total number of horizontal cross regions: " + totalNumHoriCrosses);
 
-		System.out.println("Number of vertical cross regions: " + numVertCross);
-		System.out.println("Number of Horizontal cross regions: " + numHoriCross);
+		System.out.println("Test 2: ");
+		System.out.println("totalVertSame2InARow: " + totalVertSame2InARow);
+		System.out.println("totalHoriSame2InARow: " + totalHoriSame2InARow);
+		//int totalVertSame2InARow = 0;
+		//int totalHoriSame2InARow = 0;
+		System.out.println("Sanity check should be zero: " + debug2InARowSanity);
 	}
 	
 	public static char getLabelFromIndex(int index) {
