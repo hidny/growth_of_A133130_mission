@@ -3,7 +3,7 @@ package selfAvoidingCycleSimulator;
 import java.math.BigInteger;
 import java.util.Random;
 
-public class BasicSquareSimulator {
+public class WRONGBasicSquareSimulator {
 
 	//TODO:
 	// Test that transpose looks similar to result.
