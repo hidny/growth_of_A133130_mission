@@ -7,10 +7,11 @@ public class SimulateNbyN {
 	// I matched A133130, but it's not clear how...
 	//June 6th, 2026
 	//I feel like I did this before, and I probably did it more efficiently too.
+	//AHA: I did it in misselaneous.growthRateMultLoops.GetNumWaysToGridWithMultLoops.java
 	
 	public static void main(String[] args) {
 
-		solve(15);
+		solve(20);
 	}
 
 	
