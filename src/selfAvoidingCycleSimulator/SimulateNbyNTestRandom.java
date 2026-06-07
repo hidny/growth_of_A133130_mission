@@ -275,7 +275,6 @@ public class SimulateNbyNTestRandom {
 			System.exit(1);
 		}
 		
-		//TODO:
 		return ret;
 	}
 }
