@@ -5,35 +5,13 @@ import java.security.SecureRandom;
 import java.util.Hashtable;
 import java.util.Set;
 
-public class SimulateNbyN {
+public class SimulateNbyNTestRandom {
 
 	// I matched A133130, but it's not clear how...
 	//June 6th, 2026
 	//I feel like I did this before, and I probably did it more efficiently too.
 	//AHA: I did it in misselaneous.growthRateMultLoops.GetNumWaysToGridWithMultLoops.java
 
-	/*
-	 * Finally generated random sample:
-	 * Drawing random solutions:
-Key:
-##__##_#_####__
-____##___#__###
-____#__#_####__
-###____###__##_
-###____####____
-#_#_##____###_#
-#_#_##__#______
-#___#######_##_
-###_#_#####____
-#_____####___##
-###_######___##
-##__#___###_###
-____#___#___#_#
-_#_###__#_#_###
-#######_###_#__
- 
-	 */
-	
 	public static Hashtable<String, Integer> debugCounter = new Hashtable<String, Integer>();
 	
 	public static void main(String[] args) {
@@ -43,7 +21,9 @@ _#_###__#_#_###
 			//drawRandom(4);
 		//}
 	
-		drawRandom(20);
+		for(int i=0; i<40000000; i++) {
+			drawRandom(2);
+		}
 		
 		
 		Set<String> keySet = debugCounter.keySet();
