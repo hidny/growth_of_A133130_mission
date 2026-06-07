@@ -16,6 +16,7 @@ public class SimulateNbyN {
 	 * Finally generated random sample:
 	 * Drawing random solutions:
 Key:
+N=15
 ##__##_#_####__
 ____##___#__###
 ____#__#_####__
@@ -32,7 +33,72 @@ ____#___#___#_#
 _#_###__#_#_###
 #######_###_#__
  
+ N=17
+###_##___#___##_#
+_##__#_#_#_#____#
+_###___#_#_##_###
+__#______#__#_#__
+_###_##_____#____
+_##__###_####_##_
+_#__####___####__
+##___#________##_
+#____#_###__#_###
+#_######________#
+########___#___##
+##_#_#_#_#______#
+____________#__##
+##_#_#______#___#
+_#############___
+##_#__####___#__#
+_######_##_____##
 	 */
+	
+	/* N=20:
+	 * 
+__###_####_#######__
+#__#__###____#______
+#_###__##___##_##___
+#_##____##__#######_
+#__####______#####__
+#_________##_____#__
+___#___##_#####__#__
+_###___####_###_####
+##_#___##_______##_#
+#__######__##_#__#__
+________##__#_#_____
+###__##__##___#__##_
+_##___#___##_____#__
+#####_###_##_#_____#
+##__#_#___#####_####
+____#####___#_____##
+__###___#_####____##
+#__##______####_#__#
+#_##########_#__##__
+#####_##__##___####_
+	 */
+/* N=21:
+#_____##__###____###_
+___#_####_#_#_#___###
+_#______#_#_###_#__##
+___###__######____##_
+##___########__#___#_
+_#########_###_#_####
+__#__###_______####_#
+_##__#_____###_#____#
+_##_##___#####___#_##
+##########_#_________
+______########___###_
+_##_#__#_____#_#__##_
+###_#_##_###_####__##
+_##____###___#_##__##
+#####__####_________#
+_#__#__#######_######
+_#__########___##__##
+_#_##____####___####_
+___###_#_##_#__###___
+#__#___#______##_#__#
+#_####_##_##_##______
+ */
 	
 	public static Hashtable<String, Integer> debugCounter = new Hashtable<String, Integer>();
 	
@@ -43,7 +109,10 @@ _#_###__#_#_###
 			//drawRandom(4);
 		//}
 	
-		drawRandom(20);
+		for(int i=0; i<1000; i++) {
+			System.out.println("i: " + i);
+			drawRandom(10);
+		}
 		
 		
 		Set<String> keySet = debugCounter.keySet();
@@ -105,6 +174,8 @@ _#_###__#_#_###
 	}
 
 	public static SecureRandom randomSource = new SecureRandom();
+	
+	public static BigInteger sanityPredictedNextSum = BigInteger.ZERO;
 	
 	public static int solve(int n, int rowIndex, int nextLayer) {
 		
@@ -224,6 +295,13 @@ _#_###__#_#_###
 			
 			//System.out.println("Sum for n = " + n + " and row index " + rowIndex + ": " + sum);
 		
+			if(sum.compareTo(sanityPredictedNextSum) != 0) {
+				System.out.println("rowIndex: " + rowIndex);
+				System.out.println("Sanity check failed! (sanityPredictedNextSum)");
+				System.out.println("sanityPredictedNextSum:\n" + sanityPredictedNextSum);
+				System.out.println("sum:\n" + sum);
+				System.exit(1);
+			}
 			
 			
 		}
@@ -259,6 +337,7 @@ _#_###__#_#_###
 				
 				if(curSum.compareTo(indexAnswer) > 0) {
 					ret = i;
+					sanityPredictedNextSum = curList[i].add(curList[i ^ ((int)Math.pow(2, n))]);
 					break;
 				}
 			}
@@ -281,6 +360,7 @@ _#_###__#_#_###
 					
 					if(curSum.compareTo(indexAnswer) > 0) {
 						ret = i;
+						sanityPredictedNextSum = curList[i].add(curList[i ^ ((int)Math.pow(2, n))]);
 						break;
 					}
 					
