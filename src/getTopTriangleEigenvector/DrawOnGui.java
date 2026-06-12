@@ -13,6 +13,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import indepMatrixDiffTrial.GetMatrixDiff;
+
 //From youtube Java GUI Tutorial - Make a GUI in 13 Minutes #99
 //From https://introcs.cs.princeton.edu/java/15inout/GUI.java.html
 public class DrawOnGui implements ActionListener {
@@ -493,7 +495,7 @@ public class DrawOnGui implements ActionListener {
 
 			int N_TO_USE = -1;
 
-			boolean IS_TRIANGLE = true;
+			boolean IS_TRIANGLE = false;
 			boolean ret[][] = null;
 
 			if(IS_TRIANGLE) {
@@ -505,9 +507,14 @@ public class DrawOnGui implements ActionListener {
 				N_TO_USE = EVEN_NUM_N;
 			} else {
 
-				//boolean ret[][] = getTableTubeSquareLattice(N);
+				//ret = getTableTubeSquareLattice(N);
 				
-				ret = getTableSquareLattice(N);
+				ret = GetMatrixDiff.diffMatrix(N);
+				
+				//ret = getTableSquareLattice(N);
+				
+			
+				//ret = GetMatrixDiff.getTableSquareLatticeEveryOtherConstraint(N);
 				N_TO_USE = N;
 			}
 			

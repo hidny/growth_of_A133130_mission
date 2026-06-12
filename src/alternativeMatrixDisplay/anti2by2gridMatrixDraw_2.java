@@ -4,7 +4,13 @@ public class anti2by2gridMatrixDraw_2 {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
-		drawIt(6);
+		
+		for(int i=0; i<8; i++) {
+			drawIt(i);
+			System.out.println();
+			System.out.println();
+			System.out.println();
+		}
 	}
 	
 	

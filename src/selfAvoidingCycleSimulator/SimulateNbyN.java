@@ -52,7 +52,27 @@ _#############___
 ##_#__####___#__#
 _######_##_____##
 	 */
-	
+/*
+ * N=18:
+#######__#________
+###__##_###_##__##
+#######___####____
+____________##____
+_#___####____#___#
+_#________#_##_###
+####_##___#______#
+___###______###__#
+#___###_#___###_##
+#_#_#_#_###_____##
+____###_#_#_######
+#_#___#_#_#_#_____
+#_#####_____#___##
+#_#####____######_
+#_#___#_#__##_#___
+____#####_###_____
+##______#_#####_##
+_#####_##__##_#___
+ */
 	/* N=20:
 	 * 
 __###_####_#######__
@@ -109,14 +129,21 @@ ___###_#_##_#__###___
 			//drawRandom(4);
 		//}
 	
-		//for(int i=0; i<1000; i++) {
-		//	System.out.println("i: " + i);
-		//	drawRandom(10);
-		//}
+		for(int i=0; i<1000; i++) {
+			System.out.println("i: " + i);
+			drawRandom(10);
+		}
 		
-		drawRandom(18);
+		//drawRandom(18);
 		
 		Set<String> keySet = debugCounter.keySet();
+		
+		int debugHoriSame =0;
+		int debugVertSame =0;
+		long numHash = 0;
+		long numUnderScores = 0;
+
+		
 		
 		int numKeys = 0;
 		// Loop through the keys
@@ -124,14 +151,45 @@ ___###_#_##_#__###___
             System.out.println("Key:\n" + key);
             System.out.println("Values: " + debugCounter.get(key));
             numKeys++;
+            
+            int horiCharLength = (int)(Math.sqrt(key.length())) + 1;
+            
+            if(horiCharLength * (horiCharLength-1) != key.length()) {
+            	System.out.println("OOPS!");
+            }
+            
+            
+            for(int i=0; i<key.length(); i++) {
+            	if(key.charAt(i) != '#' && key.charAt(i) != '_') {
+            		continue;
+            	}
+            	if(i > 0 && key.charAt(i) == key.charAt(i-1)) {
+            		debugHoriSame++;
+            	}
+
+            	if(i >= horiCharLength && key.charAt(i) == key.charAt(i-horiCharLength)) {
+            		debugVertSame++;
+            	}
+            	
+            	if(key.charAt(i) == '#') {
+            		numHash++;
+            	} else if(key.charAt(i) == '_') {
+            		numUnderScores++;
+            	}
+            }
         }
         
         System.out.println("Number of keys: " + numKeys);
         
+        System.out.println("Debug counts:");
+		System.out.println("debugHoriSame: " + debugHoriSame);
+		System.out.println("debugVertSame: " + debugVertSame);
+		System.out.println("numHash: " + numHash);
+		System.out.println("numUnderScores: " + numUnderScores);
         
 	}
 	
-	
+		
 	public static void drawRandom(int length) {
 		
 		String ret = "";
