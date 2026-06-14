@@ -8,8 +8,104 @@ public class GetMatrixDiff {
 		// TODO Auto-generated method stub
 
 	}
+
+	public static boolean[][] diffMatrix3(int numBits) {
+		
+		boolean diff2[][] = diffMatrix2(numBits);
+		
+		boolean indepMatrix3[][] = indepMatrix3(numBits);
+		
+		
+		boolean ret[][] = new boolean[diff2.length][diff2.length];
+		
+		for(int i=0; i<ret.length; i++) {
+			for(int j=0; j<ret[0].length; j++) {
+				if(indepMatrix3[i][j] && ! diff2[i][j]) {
+					ret[i][j] = true;
+				}
+				
+				if(diff2[i][j] && ! indepMatrix3[i][j]) {
+					System.out.println("ah well!");
+					//System.exit(1);
+				}
+			}
+		}
+		
+		return ret;
+		
+	}
+	public static boolean[][] indepMatrix3(int numBits) {
+		
+		
+		int length = (int)Math.pow(2, numBits);
+		boolean diff3[][] = new boolean[length][length];
+		
+		boolean origFractal[][] = new boolean[16][16];
+		
+		origFractal[4][10] = true;
+		origFractal[4][11] = true;
+		origFractal[5][11] = true;
+		
+
+		origFractal[10][4] = true;
+		origFractal[11][4] = true;
+		origFractal[11][5] = true;
+
+		int tmpLength = origFractal.length;
+		
+		int maxLengthFractal = origFractal.length;
+		while(tmpLength <= diff3.length) {
+			tmpLength *=4;
+			maxLengthFractal*= 4;
+		}
+		maxLengthFractal /=4;
+		
+		for(int lengthFractal=maxLengthFractal; lengthFractal>=origFractal.length; lengthFractal/=4) {
+			
+			boolean fractalToUse[][] = origFractal;
+			
+			while(fractalToUse.length < lengthFractal) {
+				fractalToUse = multFour(fractalToUse);
+			}
+			
+			for(int i=0; i<diff3.length; i+=fractalToUse.length) {
+				for(int j=0; j<diff3[0].length; j+=fractalToUse.length) {
+
+					boolean cancelIt = false;
+					for(int i2=0; i2<fractalToUse.length; i2++) {
+						for(int j2=0; j2<fractalToUse[0].length; j2++) {
+							if(diff3[i + i2][j + j2]) {
+								cancelIt = true;
+							}
+						}
+					}
+					
+					if( ! cancelIt) {
+						for(int i2=0; i2<fractalToUse.length; i2++) {
+							for(int j2=0; j2<fractalToUse[0].length; j2++) {
+								
+								if(fractalToUse[i2][j2]) {
+									diff3[i + i2][j + j2] = true;
+								} else {
+									//diff2[i + i2][j + j2] = false;
+								}
+							}
+						}
+					}
+				}
+			}
+			
+		}
+		
 	
-	public static boolean[][] diffMatrxi2(int numBits) {
+		
+		
+		
+		return diff3;
+		
+	}
+	
+	public static boolean[][] diffMatrix2(int numBits) {
 		
 		boolean diff1[][] = diffMatrix(numBits);
 		
@@ -36,8 +132,6 @@ public class GetMatrixDiff {
 	}
 	public static boolean[][] indepMatrix2(int numBits) {
 		
-		boolean diff1[][] = diffMatrix(numBits);
-		
 		int length = (int)Math.pow(2, numBits);
 		boolean diff2[][] = new boolean[length][length];
 		
@@ -54,12 +148,10 @@ public class GetMatrixDiff {
 		origFractal[5][2] = false;
 		origFractal[5][3] = true;
 
-		int numMultFour = 1;
 		int tmpLength = origFractal.length;
 		
 		int maxLengthFractal = origFractal.length;
 		while(tmpLength <= diff2.length) {
-			numMultFour++;
 			tmpLength *=4;
 			maxLengthFractal*= 4;
 		}

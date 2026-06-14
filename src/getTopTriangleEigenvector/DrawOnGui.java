@@ -528,8 +528,11 @@ public class DrawOnGui implements ActionListener {
 				
 
 				//ret = GetMatrixDiff.indepMatrix2(N);
-				ret = GetMatrixDiff.diffMatrxi2(N);
+				//ret = GetMatrixDiff.diffMatrix2(N);
 				
+				//ret = GetMatrixDiff.indepMatrix3(N);
+
+				ret = GetMatrixDiff.diffMatrix3(N);
 				N_TO_USE = N;
 			}
 			
