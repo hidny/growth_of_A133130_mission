@@ -482,6 +482,17 @@ public class DrawOnGui implements ActionListener {
 		return ret;
 	}
 	
+	private int getNumTrues(boolean array[][]) {
+		int ret = 0;
+		for(int i=0; i<array.length; i++) {
+			for(int j=0; j<array[0].length; j++) {
+				if(array[i][j]) {
+					ret++;
+				}
+			}
+		}
+		return ret;
+	}
 	
 	private class GPanel extends JPanel {
 		
@@ -509,14 +520,20 @@ public class DrawOnGui implements ActionListener {
 
 				//ret = getTableTubeSquareLattice(N);
 				
-				ret = GetMatrixDiff.diffMatrix(N);
-				
+				//ret = GetMatrixDiff.diffMatrix(N);
 				//ret = getTableSquareLattice(N);
 				
 			
 				//ret = GetMatrixDiff.getTableSquareLatticeEveryOtherConstraint(N);
+				
+
+				//ret = GetMatrixDiff.indepMatrix2(N);
+				ret = GetMatrixDiff.diffMatrxi2(N);
+				
 				N_TO_USE = N;
 			}
+			
+			int numTrues = getNumTrues(ret);
 			
 			int numDivs = (int) Math.pow(2, N_TO_USE);
 			int gap = DIM / numDivs;
@@ -554,6 +571,8 @@ public class DrawOnGui implements ActionListener {
 			g.drawRect(startX, startY, DIM -1, DIM -1);
 			g.setColor(Color.BLUE);
 			//g.fillOval(50, 50, 100, 100);
+			
+			System.out.println("Num trues: " + numTrues);
 		}
 	}
 	
