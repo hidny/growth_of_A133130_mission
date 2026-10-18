@@ -506,7 +506,7 @@ public class DrawOnGui implements ActionListener {
 
 			int N_TO_USE = -1;
 
-			boolean IS_TRIANGLE = false;
+			boolean IS_TRIANGLE = true;
 			boolean ret[][] = null;
 
 			if(IS_TRIANGLE) {
@@ -521,7 +521,7 @@ public class DrawOnGui implements ActionListener {
 				//ret = getTableTubeSquareLattice(N);
 				
 				//ret = GetMatrixDiff.diffMatrix(N);
-				//ret = getTableSquareLattice(N);
+				ret = getTableSquareLattice(N);
 				
 			
 				//ret = GetMatrixDiff.getTableSquareLatticeEveryOtherConstraint(N);
@@ -532,7 +532,7 @@ public class DrawOnGui implements ActionListener {
 				
 				//ret = GetMatrixDiff.indepMatrix3(N);
 
-				ret = GetMatrixDiff.diffMatrix3(N);
+				//ret = GetMatrixDiff.diffMatrix3(N);
 				N_TO_USE = N;
 			}
 			
